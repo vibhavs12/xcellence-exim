@@ -1,0 +1,138 @@
+# Xcellence Exim — redesigned website
+
+A complete static rebuild of xcellenceexim.com. No build step, no framework, no
+dependencies — open `index.html` locally, or upload the folder to any host.
+
+## Pages
+
+| File | Page |
+|---|---|
+| `index.html` | Home |
+| `about.html` | About Us |
+| `rice.html` | Rice — Basmati & Non-Basmati |
+| `coffee.html` | Coffee — Arabica & Robusta |
+| `spices.html` | Spices & Sannam S4 Red Chilli |
+| `sugar.html` | Sugar ICUMSA 45 |
+| `export-process.html` | Export Process + Buyer FAQ (new page) |
+| `certificates.html` | Certificates & Registrations |
+| `contact.html` | Contact + RFQ form |
+
+Plus `sitemap.xml` and `robots.txt`.
+
+## Deploying
+
+Drag the whole folder onto **Netlify Drop** (app.netlify.com/drop), or push it to
+**Vercel**, **Cloudflare Pages** or **GitHub Pages**. On traditional hosting
+(cPanel / Hostinger), upload the contents into `public_html/`.
+
+To replace the WordPress site on the same domain, upload these files to the web
+root and remove or rename the WordPress install. A few URLs change:
+
+| Old URL | New URL |
+|---|---|
+| `/about-us/` | `/about.html` |
+| `/rice/` | `/rice.html` |
+| `/tea-coffee/` | `/coffee.html` |
+| `/spices/` | `/spices.html` |
+| `/sugar-icumsa-45/` | `/sugar.html` |
+| `/certificates/` | `/certificates.html` |
+| `/contact-us/` | `/contact.html` |
+
+Add 301 redirects for those so existing Google rankings carry over — a
+`_redirects` file on Netlify, or `.htaccess` rules on Apache.
+
+## Images
+
+Images currently load from the existing WordPress media library, so the site
+works immediately. To make it fully self-contained, run from this folder:
+
+```bash
+bash tools/download-images.sh   # fetch the images locally
+bash tools/use-local-images.sh  # point the HTML at the local copies
+```
+
+## The enquiry form
+
+`contact.html` has a structured RFQ form — product, quantity, destination port,
+Incoterms, packing. The visitor never leaves the site; on submit it emails a
+formatted enquiry to the sales desk with the director copied in:
+
+| | |
+|---|---|
+| **To** | sales@xcellenceexim.com |
+| **CC** | ashwani@xcellenceexim.com |
+| **Subject** | `Export enquiry — {product} — {country} — {name}` |
+| **Reply-To** | the buyer's own address, so hitting Reply answers them directly |
+| **Body** | every field as a labelled table row |
+
+Both addresses are set on the `<form>` tag, so changing them is a one-line edit:
+
+```html
+<form id="rfq-form" data-to="sales@xcellenceexim.com"
+                    data-cc="ashwani@xcellenceexim.com" ...>
+```
+
+### ⚠️ One-time activation — do this before going live
+
+Delivery runs through [FormSubmit](https://formsubmit.co), a free form-to-email
+relay (no account, no server, no monthly cost). The **first** submission sends a
+confirmation link to sales@xcellenceexim.com. Someone has to open that email and
+click the link **once**. Until they do, enquiries are not delivered.
+
+So: publish the site, send yourself one test enquiry, click the activation link
+in the inbox, then send a second test to confirm it arrives. After that it runs
+by itself.
+
+Optionally, FormSubmit will then give you a random string to use in place of the
+address, which keeps the email out of the page source and away from scrapers —
+swap it into `data-to` if you want that.
+
+If the relay is ever unreachable, the form falls back to opening the visitor's
+mail client with the identical content, so an enquiry is never silently lost.
+There is also a **Send via WhatsApp** button that composes the same summary.
+
+To use a different provider instead, add `data-endpoint="..."` to the form
+(Formspree, Web3Forms and Netlify Forms all work) — the script prefers it.
+
+## Languages
+
+Translation is still GTranslate, the same service the old site used, so the full
+language list is preserved. What changed is the interface: instead of a bare
+dropdown of 100+ English names, there's a picker showing
+
+- the **flag and the language's own name** — Español, العربية, Tiếng Việt — not
+  the English label, which is what a non-English speaker is actually scanning for
+- a **Key export markets** row of twelve one-tap tiles (Gulf, LATAM, Africa,
+  SE Asia, Europe, East Asia)
+- a **search box** covering all languages, matching either the English or the
+  native name
+- a footnote noting these are machine translations and English governs contracts
+
+Edit the twelve featured markets in `assets/js/languages.js`
+(`XE_PRIORITY_LANGUAGES`). The rest of the list builds itself from whatever
+GTranslate supports, so it never drifts out of sync.
+
+Flags come from flagcdn.com and fall back to a lettered chip if an image fails
+or the language has no meaningful single flag (Esperanto, Latin). They mark a
+representative market, not a claim that a language belongs to one country.
+
+Right-to-left languages (Arabic, Hebrew, Urdu, Farsi, Kurdish, Pashto, Uyghur)
+flip the whole layout — navigation, tables, forms, drawer and icons.
+
+The picker is mounted once and *moved* between the header and the mobile menu
+rather than duplicated, so translation state survives a resize — the usual cause
+of a half-translated page.
+
+### Header fitting
+
+Translated menu labels can run two to three times longer than the English ones.
+Rather than guess a breakpoint, the header measures what the row actually needs
+and collapses to the hamburger the moment it stops fitting — in any language, at
+any zoom level, re-checking whenever the translation swaps the text in.
+
+## Editing
+
+- **Colours, spacing, type** — all tokens sit at the top of `assets/css/styles.css`.
+- **Contact details** — search and replace in the HTML, or edit `../build/parts.py`
+  and re-run `python3 build.py` to regenerate every page consistently.
+- **Behaviour** — `assets/js/main.js`, vanilla JS, no dependencies.
