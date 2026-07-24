@@ -530,30 +530,53 @@
   var navBrand = $('.brand');
   var navActs = $('.nav__actions');
 
+  function headroom() {
+    var gap = parseFloat(window.getComputedStyle(navRow).columnGap) || 16;
+    var cs = window.getComputedStyle(navRow);
+    var needed = navBrand.offsetWidth + navMenu.scrollWidth + navActs.scrollWidth + (gap * 2);
+    var available = navRow.clientWidth
+      - parseFloat(cs.paddingLeft || 0)
+      - parseFloat(cs.paddingRight || 0);
+    return { needed: needed, available: available };
+  }
+
+  /* Fit the header to whatever language is on screen.
+
+     Translated labels can be far longer than the English originals. Earlier
+     this collapsed straight to the hamburger, which meant the navigation
+     simply vanished on a wide desktop screen — worse than a cramped header.
+
+     It now degrades in stages and NEVER hides the desktop menu:
+       1. normal
+       2. is-tight   — smaller type, tighter padding
+       3. is-wrapped — menu drops to its own full-width row
+     The hamburger is reserved for genuinely narrow viewports (<= 1160px),
+     where CSS handles it. */
   function fitHeader() {
     if (!header || !navRow || !navMenu || !navBrand || !navActs) return;
+
+    header.classList.remove('is-compact');   // legacy state, never used now
+
     if (window.matchMedia('(max-width: 1160px)').matches) {
-      // below the breakpoint CSS already handles it; don't fight it
-      header.classList.remove('is-compact');
+      header.classList.remove('is-tight', 'is-wrapped');
       placeLang();
       return;
     }
 
-    // Measure in the expanded state. Reading layout right after removing the
-    // class is synchronous, so the browser never paints the intermediate step.
-    header.classList.remove('is-compact');
+    // Measure from a clean slate. Reading layout straight after a class
+    // change is synchronous, so no intermediate state is ever painted.
+    header.classList.remove('is-tight', 'is-wrapped');
 
-    var gap = parseFloat(window.getComputedStyle(navRow).columnGap) || 16;
-    var needed = navBrand.offsetWidth + navMenu.scrollWidth + navActs.scrollWidth + (gap * 2);
-    var available = navRow.clientWidth
-      - parseFloat(window.getComputedStyle(navRow).paddingLeft || 0)
-      - parseFloat(window.getComputedStyle(navRow).paddingRight || 0);
+    var m = headroom();
+    // Not laid out yet (background tab, print preview) — every value reads 0.
+    if (m.available <= 0 || m.needed <= 0) { placeLang(); return; }
 
-    // If the header hasn't been laid out yet (hidden tab, print preview,
-    // pre-paint) every measurement reads 0 — don't collapse on that.
-    if (available > 0 && needed > 0 && needed > available - 4) {
-      header.classList.add('is-compact');
+    if (m.needed > m.available - 4) {
+      header.classList.add('is-tight');
+      m = headroom();
+      if (m.needed > m.available - 4) header.classList.add('is-wrapped');
     }
+
     placeLang();
   }
 

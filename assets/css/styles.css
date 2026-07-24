@@ -569,13 +569,38 @@ font { background: none !important; box-shadow: none !important; }
   .nav__actions .langpick { display: none; }
 }
 
-/* … and also whenever the row genuinely stops fitting, which is what happens
-   once Google Translate swaps English labels for longer ones (Armenian,
-   German, Vietnamese…). JS measures and sets .is-compact. */
-.site-header.is-compact .nav__menu,
-.site-header.is-compact .nav__actions .btn--desktop,
-.site-header.is-compact .nav__actions .langpick { display: none; }
-.site-header.is-compact .nav__toggle { display: inline-flex; }
+/* … but above that width the menu must NEVER disappear. Translated labels can
+   be far longer than the English originals, so the header degrades in stages
+   instead: first it tightens, then the menu drops to its own row. JS measures
+   and applies .is-tight / .is-wrapped. */
+
+/* Stage 2 — tighten */
+.site-header.is-tight .nav__menu { gap: 0; }
+.site-header.is-tight .nav__link {
+  font-size: .85rem;
+  padding-inline: .55rem;
+  padding-block: .55rem;
+}
+.site-header.is-tight .nav__actions { gap: .45rem; }
+.site-header.is-tight .nav__actions .btn--desktop {
+  padding: .6rem .95rem; font-size: .8rem;
+}
+.site-header.is-tight .langpick__btn { max-width: 132px; padding-inline: .55rem .7rem; }
+.site-header.is-tight .langpick__current { max-width: 62px; }
+.site-header.is-tight .brand img { height: clamp(28px, 2.8vw, 34px); }
+
+/* Stage 3 — menu moves to its own full-width row, still fully visible */
+.site-header.is-wrapped .nav { flex-wrap: wrap; row-gap: 0; }
+.site-header.is-wrapped .nav__menu {
+  order: 3;
+  flex: 1 0 100%;
+  flex-wrap: wrap;
+  justify-content: center;
+  border-top: 1px solid var(--line);
+  margin-top: .1rem;
+  padding-block: .35rem .5rem;
+}
+.site-header.is-wrapped .nav__link[aria-current="page"]::after { bottom: .05rem; }
 
 /* Belt and braces: never let a long translated string blow out the layout. */
 .nav__link { max-width: 15rem; overflow: hidden; text-overflow: ellipsis; }
@@ -1061,7 +1086,21 @@ td strong { color: var(--green-800); font-weight: 600; }
 @media (max-width: 940px) { .footer__main { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 560px) { .footer__main { grid-template-columns: 1fr; } }
 
-.footer__brand img { height: 44px; width: auto; margin-bottom: 1rem; filter: brightness(0) invert(1); opacity: .95; }
+/* The logo artwork is dark text on a light ground, so it cannot sit directly
+   on the dark green footer. It used to be flattened to a white silhouette
+   with `filter: brightness(0) invert(1)`, which depended on the PNG having a
+   transparent background — it does not, so the mark disappeared into a slab.
+   Placing it on a light plate keeps the real brand colours and cannot fail. */
+.footer__brand img {
+  height: 40px; width: auto;
+  display: block;
+  margin-bottom: 1.15rem;
+  background: #fff;
+  padding: .5rem .75rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .18);
+  object-fit: contain;
+}
 .footer__brand p { color: #8DA398; max-width: 38ch; }
 
 .footer h4 {
