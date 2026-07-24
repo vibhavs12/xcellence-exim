@@ -341,6 +341,20 @@ li { margin-bottom: .45em; }
 .langpick__btn:focus-visible { border-color: var(--green-600); box-shadow: 0 0 0 3px var(--green-100); outline: none; }
 .langpick__btn[disabled] { opacity: .55; cursor: not-allowed; }
 
+/* While the translation engine loads / applies */
+.langpick.is-working .langpick__btn { opacity: .7; pointer-events: none; }
+.langpick.is-working .langpick__caret {
+  border: 2px solid var(--green-100);
+  border-top-color: var(--green-600);
+  border-radius: 50%;
+  animation: xe-spin .6s linear infinite;
+}
+.langpick.is-working .langpick__caret path { display: none; }
+@keyframes xe-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .langpick.is-working .langpick__caret { animation: none; }
+}
+
 .langpick__current {
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 108px;
 }

@@ -163,10 +163,18 @@
     return 'en';
   }
 
-  // NOTE: this writes dir/lang/class onto <html>, and we also *observe*
-  // <html> for changes. Every write must therefore be idempotent — only
-  // touch an attribute when its value actually differs — otherwise the
-  // observer re-triggers on our own mutation and spins forever.
+  /* Sets text direction only.
+
+     Deliberately does NOT touch <html lang>. That attribute declares the
+     language the page is *written in* — English. Overwriting it with the
+     target language tells Google Translate the page is already translated,
+     and it then silently refuses to do anything. Google manages the
+     translated state itself via the `translated-ltr` / `translated-rtl`
+     classes it puts on <html>.
+
+     We also observe <html> for changes, so every write here must be
+     idempotent — only touch an attribute when the value actually differs,
+     or the observer re-triggers on our own mutation and spins forever. */
   function applyDirection() {
     var lang = currentLang() || 'en';
     var base = lang.split('-')[0];
@@ -175,7 +183,6 @@
     var html = doc.documentElement;
 
     if (html.getAttribute('dir') !== dir) html.setAttribute('dir', dir);
-    if (html.getAttribute('lang') !== lang) html.setAttribute('lang', lang);
     if (html.classList.contains('is-rtl') !== isRtl) html.classList.toggle('is-rtl', isRtl);
   }
 
@@ -188,6 +195,8 @@
     if (now !== lastSeen) { lastSeen = now; applyDirection(); }
   }, 600);
 
+  // Watch only `class` — Google toggles translated-ltr / translated-rtl there.
+  // Watching `lang` as well used to make us fight the engine for that attribute.
   if (typeof MutationObserver === 'function') {
     var dirScheduled = false;
     new MutationObserver(function () {
@@ -195,8 +204,42 @@
       dirScheduled = true;
       setTimeout(function () { dirScheduled = false; applyDirection(); }, 0);
     }).observe(doc.documentElement, {
-      attributes: true, attributeFilter: ['class', 'lang']
+      attributes: true, attributeFilter: ['class']
     });
+  }
+
+  /* ----------------------------------------------------------------------
+     Load the translation engine.
+
+     GTranslate renders its own <select> immediately but defers loading
+     Google's element.js until someone interacts with that switcher. Because
+     we hide the switcher and drive it from our own picker, that trigger never
+     fires — doGTranslate() then runs, finds no `.goog-te-combo`, and returns
+     silently. So we load the engine ourselves.
+     ---------------------------------------------------------------------- */
+  var ENGINE_SRC = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit2';
+  var engineAsked = false;
+
+  function engineReady() { return !!doc.querySelector('.goog-te-combo'); }
+
+  function ensureEngine(done) {
+    if (engineReady()) { if (done) done(true); return; }
+
+    if (!engineAsked && !doc.querySelector('script[src*="translate_a/element.js"]')) {
+      engineAsked = true;
+      var s = doc.createElement('script');
+      s.src = ENGINE_SRC;
+      s.async = true;
+      s.onerror = function () { if (done) done(false); };
+      (doc.body || doc.documentElement).appendChild(s);
+    }
+
+    var tries = 0;
+    var poll = setInterval(function () {
+      tries++;
+      if (engineReady()) { clearInterval(poll); if (done) done(true); }
+      else if (tries > 40) { clearInterval(poll); if (done) done(false); }   // ~6s
+    }, 150);
   }
 
   var picker     = $('.langpick');
@@ -296,31 +339,34 @@
 
     function choose(item) {
       if (!gtSelect) return;
-      gtSelect.value = item.value;
-
-      /* Three ways in, most reliable first.
-
-         1. doGTranslate() is GTranslate's own public entry point and the only
-            one guaranteed to actually perform the translation.
-         2. A real change event, for builds that bind with addEventListener.
-         3. An inline onchange handler, for older builds.
-
-         Dispatching the event alone is NOT enough on every GTranslate build —
-         that is what stopped the picker from translating. */
-      var done = false;
-      if (typeof window.doGTranslate === 'function') {
-        try { window.doGTranslate(item.value); done = true; } catch (e) { /* fall through */ }
-      }
-      if (!done) {
-        gtSelect.dispatchEvent(new Event('change', { bubbles: true }));
-        if (typeof gtSelect.onchange === 'function') gtSelect.onchange.call(gtSelect);
-      }
-
       closePicker();
-      setTimeout(applyDirection, 400);
-      setTimeout(applyDirection, 1400);
-      setTimeout(fitHeader, 600);
-      setTimeout(fitHeader, 1600);
+
+      // Fire GTranslate's own routes straight away — no waiting, and they are
+      // harmless if the engine turns out to already be loaded.
+      gtSelect.value = item.value;
+      if (typeof window.doGTranslate === 'function') {
+        try { window.doGTranslate(item.value); } catch (e) { /* ignore */ }
+      }
+      gtSelect.dispatchEvent(new Event('change', { bubbles: true }));
+      if (typeof gtSelect.onchange === 'function') gtSelect.onchange.call(gtSelect);
+
+      // In parallel, make sure Google's engine is actually present and drive
+      // its combo directly — this is the part that does the real work when
+      // GTranslate deferred the engine because its own switcher is hidden.
+      if (!engineReady()) picker.classList.add('is-working');
+      ensureEngine(function (ok) {
+        picker.classList.remove('is-working');
+        if (!ok) return;
+        var combo = doc.querySelector('.goog-te-combo');
+        if (combo && combo.value !== item.code) {
+          combo.value = item.code;
+          combo.dispatchEvent(new Event('change'));
+        }
+      });
+
+      [200, 700, 1600, 3000].forEach(function (ms) {
+        setTimeout(function () { applyDirection(); syncCurrent(); fitHeader(); }, ms);
+      });
     }
 
     function tile(item) {
@@ -438,6 +484,14 @@
         clearInterval(langTimer);
         buildFrom(sel);
         picker.classList.add('is-ready');
+
+        // Warm the engine up as soon as the visitor shows intent, so the
+        // first language they pick applies immediately.
+        pickBtn.addEventListener('mouseenter', function () { ensureEngine(null); }, { once: true });
+        pickBtn.addEventListener('focus', function () { ensureEngine(null); }, { once: true });
+        // …and if a language is already active from a previous visit, the
+        // engine must load now or the page renders untranslated.
+        if (currentLang() !== 'en') ensureEngine(null);
         sel.addEventListener('change', function () {
           setTimeout(syncCurrent, 200);
           setTimeout(applyDirection, 400);
