@@ -21,8 +21,11 @@ Plus `sitemap.xml` and `robots.txt`.
 
 ## Deploying
 
-Drag the whole folder onto **Netlify Drop** (app.netlify.com/drop), or push it to
-**Vercel**, **Cloudflare Pages** or **GitHub Pages**. On traditional hosting
+**To share a preview with someone:** see `DEPLOY-GITHUB.md` — the repository is
+already committed, so it is a push plus one settings toggle.
+
+**Other options:** drag the folder onto **Netlify Drop** (app.netlify.com/drop),
+or push to **Vercel** or **Cloudflare Pages**. On traditional hosting
 (cPanel / Hostinger), upload the contents into `public_html/`.
 
 To replace the WordPress site on the same domain, upload these files to the web
@@ -133,6 +136,7 @@ any zoom level, re-checking whenever the translation swaps the text in.
 ## Editing
 
 - **Colours, spacing, type** — all tokens sit at the top of `assets/css/styles.css`.
-- **Contact details** — search and replace in the HTML, or edit `../build/parts.py`
-  and re-run `python3 build.py` to regenerate every page consistently.
+- **Contact details** — search and replace in the HTML, or edit `build/parts.py`
+  and re-run `python3 build/build.py` from this folder to regenerate every page
+  consistently.
 - **Behaviour** — `assets/js/main.js`, vanilla JS, no dependencies.
