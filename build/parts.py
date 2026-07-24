@@ -201,8 +201,8 @@ def header(active):
 <div class="topbar">
   <div class="wrap topbar__inner">
     <div class="topbar__contact">
-      <span>{ICON['phone']}<a href="tel:+917985916897">{PHONE}</a></span>
-      <span>{ICON['mail']}<a href="mailto:{EMAIL_SALES}">{EMAIL_SALES}</a></span>
+      <span translate="no" class="notranslate">{ICON['phone']}<a href="tel:+917985916897">{PHONE}</a></span>
+      <span translate="no" class="notranslate">{ICON['mail']}<a href="mailto:{EMAIL_SALES}">{EMAIL_SALES}</a></span>
     </div>
     <div class="topbar__right">
       <span class="topbar__social">
@@ -269,7 +269,7 @@ def header(active):
         <a class="btn btn--outline" href="https://wa.me/{WA}" target="_blank" rel="noopener">Chat on WhatsApp</a>
       </div>
 
-      <div class="drawer__meta">
+      <div class="drawer__meta" translate="no">
         <a href="tel:+917985916897">{PHONE}</a>
         <a href="mailto:{EMAIL_SALES}">{EMAIL_SALES}</a>
       </div>
@@ -310,7 +310,7 @@ def footer():
     <div class="footer__brand">
       <img src="{IMAGES['logo']}" alt="Xcellence Exim" width="180" height="44" loading="lazy">
       <p>A merchant exporter from India supplying premium agricultural commodities to importers, distributors and food manufacturers worldwide.</p>
-      <div class="footer__badges">
+      <div class="footer__badges" translate="no">
         <span>IEC</span><span>GST</span><span>FSSAI</span><span>MSME</span><span>APEDA</span>
       </div>
       <div class="footer__social">
@@ -343,12 +343,12 @@ def footer():
 
     <div>
       <h4>Get in touch</h4>
-      <address>
+      <address translate="no">
         Ashirwad Neelanchal, B-402,<br>
         Shrinathpuram, Kota — 324010,<br>
         Rajasthan, India
       </address>
-      <ul style="margin-top:1rem">
+      <ul style="margin-top:1rem" translate="no">
         <li><a href="mailto:{EMAIL_SALES}">{EMAIL_SALES}</a></li>
         <li><a href="mailto:{EMAIL_DIR}">{EMAIL_DIR}</a></li>
         <li><a href="https://wa.me/{WA}" target="_blank" rel="noopener">WhatsApp {PHONE}</a></li>
@@ -359,7 +359,7 @@ def footer():
   <div class="wrap">
     <div class="footer__bottom">
       <p>&copy; <span data-year>2026</span> Xcellence Exim. All rights reserved.</p>
-      <p>GST No: 08AAAFX5073E1Z6</p>
+      <p translate="no" class="notranslate">GST No: 08AAAFX5073E1Z6</p>
     </div>
   </div>
 </footer>

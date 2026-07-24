@@ -10,6 +10,41 @@
   var $$ = function (s, c) { return Array.prototype.slice.call((c || doc).querySelectorAll(s)); };
 
   /* ----------------------------------------------------------------------
+     0. Protect literals from machine translation
+
+     Google Translate happily translates the words inside an email address —
+     sales@… becomes satış@… in Turkish, ventas@… in Spanish — which makes it
+     undeliverable. The same applies to phone numbers, tax registrations and
+     trade codes (HSN, ICUMSA, Sannam S4), which are international identifiers
+     and must read identically in every language.
+
+     Marking an element `translate="no"` tells the engine to leave its subtree
+     alone. The markup already carries this on the known blocks; this pass is
+     the safety net, so a literal added later is protected automatically.
+
+     It runs before any translation can (the script is deferred, translation
+     needs a user action), so nothing is ever translated and then reverted.
+     ---------------------------------------------------------------------- */
+  var LITERAL_RE = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;   // email
+  var CODE_RE = /\b(?:GST|HSN|IEC|FSSAI|MSME|APEDA|ICUMSA)\b|\+\d[\d\s-]{7,}/i;
+
+  function noTranslate(el) {
+    if (!el || el.getAttribute('translate') === 'no') return;
+    el.setAttribute('translate', 'no');
+    el.classList.add('notranslate');
+  }
+
+  // Anything that is literally a contact mechanism.
+  $$('a[href^="mailto:"], a[href^="tel:"], a[href*="wa.me"], [data-literal]').forEach(noTranslate);
+
+  // Leaf elements whose text contains an address, phone or registration code.
+  $$('address, dd, dt, li, p, span, td, th, strong, small').forEach(function (el) {
+    if (el.querySelector('*')) return;                 // leaves only
+    var t = el.textContent || '';
+    if (LITERAL_RE.test(t) || CODE_RE.test(t)) noTranslate(el);
+  });
+
+  /* ----------------------------------------------------------------------
      1. Sticky header shadow
      ---------------------------------------------------------------------- */
   var header = $('.site-header');
@@ -340,6 +375,12 @@
     function choose(item) {
       if (!gtSelect) return;
       closePicker();
+
+      // On mobile the picker lives inside the drawer, so the drawer has to
+      // close as well — otherwise the visitor picks a language and is left
+      // staring at the menu instead of the newly translated page. Navigation
+      // links already behave this way; this makes the language match.
+      if (drawer && drawer.classList.contains('is-open')) closeDrawer();
 
       // Fire GTranslate's own routes straight away — no waiting, and they are
       // harmless if the engine turns out to already be loaded.

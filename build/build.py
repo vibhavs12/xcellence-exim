@@ -387,7 +387,7 @@ def product_page(fname, title, meta_desc, crumb, h1, lead, eyebrow,
     <a class="btn btn--primary" href="contact.html#rfq">Request a Quotation</a>
     <a class="btn btn--ghost" href="https://wa.me/{WA}?text={('Hello%20Xcellence%20Exim%2C%20I%20would%20like%20a%20quotation%20for%20' + crumb.replace(' ', '%20').replace('&amp;', 'and'))}" target="_blank" rel="noopener">Enquire on WhatsApp</a>
     <hr>
-    <dl>
+    <dl translate="no" class="notranslate">
       <dt>HSN Code</dt><dd>{hsn}</dd>
       <dt>Direct line</dt><dd><a href="mailto:{EMAIL_SALES}" style="color:#DFBE4B">{EMAIL_SALES}</a></dd>
     </dl>
@@ -906,7 +906,7 @@ contact += f"""
         <div class="aside-card">
           <h3>Export desk</h3>
           <p>Reach us directly — we typically reply the same working day.</p>
-          <dl>
+          <dl translate="no" class="notranslate">
             <dt>WhatsApp / Phone</dt>
             <dd><a href="https://wa.me/{WA}" target="_blank" rel="noopener" style="color:#DFBE4B">{PHONE}</a></dd>
             <dt>Sales</dt>
