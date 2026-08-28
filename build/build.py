@@ -214,7 +214,7 @@ home += f"""
         </div>
       </div>
       <div class="split__media">
-        <img src="{I['hero3']}" alt="Export-ready packaging and documentation" width="800" height="600" loading="lazy">
+        <img src="{I['home_logistics']}" alt="Export professional coordinating shipment documents and logistics" width="800" height="600" loading="lazy">
       </div>
     </div>
   </div>
