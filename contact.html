@@ -185,16 +185,14 @@
 
         <div class="form-card reveal">
           <form id="rfq-form" novalidate method="POST"
-                action="https://formsubmit.co/sales@xcellenceexim.com"
+                action="https://script.google.com/macros/s/AKfycbzaIttnTKeeHGlPzfkkl4dVBslXxUuc9k5ZCYf1t_U5cfGaTYDjogVXyJqFi23_q3zXSA/exec"
+                data-endpoint="https://script.google.com/macros/s/AKfycbzaIttnTKeeHGlPzfkkl4dVBslXxUuc9k5ZCYf1t_U5cfGaTYDjogVXyJqFi23_q3zXSA/exec"
                 data-to="sales@xcellenceexim.com"
                 data-cc="ashwani@xcellenceexim.com"
                 data-whatsapp="917985916897">
-            <!-- Enquiries are emailed to data-to, with data-cc copied in, via
-                 FormSubmit (free, no account, no server). The first submission
-                 sends a one-time activation link to sales@xcellenceexim.com — click it
-                 once and delivery is automatic from then on.
-                 To switch providers instead, add data-endpoint="..." above.
-                 The action is a no-JavaScript fallback and never opens a mail app. -->
+            <!-- Enquiries are sent through the company's Google Workspace Apps
+                 Script endpoint. The action is also the no-JavaScript fallback;
+                 no email client or third-party form relay is used. -->
             <div class="field-grid">
               <div class="field">
                 <label for="f-name">Full name <span class="req" aria-hidden="true">*</span></label>

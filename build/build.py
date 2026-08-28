@@ -4,7 +4,7 @@ import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from parts import (head, header, footer, cta_band, pagehead,
                    IMAGES as I, ICON, SITE, WA, EMAIL_SALES, EMAIL_INFO,
-                   EMAIL_DIR, PHONE)
+                   EMAIL_DIR, ENQUIRY_ENDPOINT, PHONE)
 
 # Pages are written to the repository root so GitHub Pages can serve
 # them directly (Settings -> Pages -> Deploy from branch: main / root).
@@ -810,16 +810,14 @@ contact += f"""
 
         <div class="form-card reveal">
           <form id="rfq-form" novalidate method="POST"
-                action="https://formsubmit.co/{EMAIL_SALES}"
+                action="{ENQUIRY_ENDPOINT}"
+                data-endpoint="{ENQUIRY_ENDPOINT}"
                 data-to="{EMAIL_SALES}"
                 data-cc="{EMAIL_DIR}"
                 data-whatsapp="{WA}">
-            <!-- Enquiries are emailed to data-to, with data-cc copied in, via
-                 FormSubmit (free, no account, no server). The first submission
-                 sends a one-time activation link to {EMAIL_SALES} — click it
-                 once and delivery is automatic from then on.
-                 To switch providers instead, add data-endpoint="..." above.
-                 The action is a no-JavaScript fallback and never opens a mail app. -->
+            <!-- Enquiries are sent through the company's Google Workspace Apps
+                 Script endpoint. The action is also the no-JavaScript fallback;
+                 no email client or third-party form relay is used. -->
             <div class="field-grid">
               <div class="field">
                 <label for="f-name">Full name <span class="req" aria-hidden="true">*</span></label>

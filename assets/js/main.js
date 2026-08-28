@@ -682,30 +682,21 @@
      Submits from the page (the visitor never leaves the site) and delivers a
      formatted email to the sales desk, with the director in CC.
 
-     Transport is FormSubmit — a free form-to-email relay, no account and no
-     server needed. It is configured entirely through the data- attributes on
-     the <form> in contact.html:
+     Transport is the company's Google Workspace Apps Script web app. It is
+     configured through the data- attributes on the <form> in contact.html:
 
-       data-to        sales@xcellenceexim.com     primary recipient
-       data-cc        ashwani@xcellenceexim.com   copied on every enquiry
-       data-endpoint  (optional) override for Formspree/Web3Forms/Netlify
+       data-endpoint  deployed Apps Script /exec URL
+       data-to        sales@xcellenceexim.com (display/config reference)
 
-     ONE-TIME ACTIVATION: the very first submission sends a confirmation link
-     to data-to. Someone has to open that email and click the link once —
-     after that every enquiry is delivered automatically. Until it is clicked,
-     submissions are held rather than delivered.
-
-     If the relay is unreachable, the form keeps the visitor on the page and
-     shows a clear error. It never launches a desktop mail application.
+     Apps Script does not expose CORS response headers, so the browser uses a
+     simple no-cors form POST. Validation is repeated server-side before the
+     authenticated Workspace account sends the formatted email.
      ---------------------------------------------------------------------- */
   var form = $('#rfq-form');
   if (form) {
     var status = $('#form-status');
-    var TO_EMAIL = form.getAttribute('data-to') || 'sales@xcellenceexim.com';
-    var CC_EMAIL = form.getAttribute('data-cc') || '';
     var WA_NUMBER = (form.getAttribute('data-whatsapp') || '917985916897').replace(/\D/g, '');
-    var ENDPOINT = form.getAttribute('data-endpoint') ||
-                   ('https://formsubmit.co/ajax/' + TO_EMAIL);
+    var ENDPOINT = form.getAttribute('data-endpoint') || form.action;
 
     var setError = function (field, msg) {
       var wrap = field.closest('.field');
@@ -749,8 +740,7 @@
       return el ? String(el.value || '').trim() : '';
     }
 
-    /* The email body. FormSubmit renders each key as a labelled row, so the
-       keys are written the way we want them to read in the inbox. */
+    /* The Workspace endpoint renders these labelled fields as an HTML table. */
     function answers() {
       var o = {};
       o['Full name']            = val('name');
@@ -765,14 +755,6 @@
       o['Packing preference']   = val('packing') || '—';
       o['Message']              = val('message');
       return o;
-    }
-
-    function subjectLine() {
-      var bits = ['Export enquiry'];
-      if (val('product')) bits.push(val('product'));
-      if (val('country')) bits.push(val('country'));
-      if (val('name')) bits.push(val('name'));
-      return bits.join(' — ');
     }
 
     function asText() {
@@ -820,22 +802,16 @@
       }
 
       var payload = answers();
-      payload._subject  = subjectLine();
-      payload._template = 'table';
-      payload._captcha  = 'false';        // required for AJAX submissions
-      payload._replyto  = val('email');   // hitting Reply answers the buyer
-      if (CC_EMAIL) payload._cc = CC_EMAIL;
+      payload.source = window.location.href;
+      var body = new URLSearchParams();
+      Object.keys(payload).forEach(function (key) { body.append(key, payload[key]); });
 
       busy(true);
       fetch(ENDPOINT, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(payload)
-      }).then(function (r) {
-        return r.json().catch(function () { return { success: r.ok }; });
-      }).then(function (data) {
-        var ok = data && (data.success === true || data.success === 'true');
-        if (!ok) throw new Error(( data && data.message) || 'relay error');
+        mode: 'no-cors',
+        body: body
+      }).then(function () {
         form.reset();
         show('ok', 'Thank you — your enquiry is on its way to our export desk. ' +
                    'We reply within one business day, usually sooner.');

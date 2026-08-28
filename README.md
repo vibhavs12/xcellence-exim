@@ -77,25 +77,16 @@ Both addresses are set on the `<form>` tag, so changing them is a one-line edit:
 
 ### ⚠️ One-time activation — do this before going live
 
-Delivery runs through [FormSubmit](https://formsubmit.co), a free form-to-email
-relay (no account, no server, no monthly cost). The **first** submission sends a
-confirmation link to sales@xcellenceexim.com. Someone has to open that email and
-click the link **once**. Until they do, enquiries are not delivered.
+Delivery runs through the Google Workspace Apps Script web app in
+`integrations/google-apps-script/`. The deployed Workspace account sends a
+formatted email directly to sales@xcellenceexim.com, copies the director, and
+sets Reply-To to the buyer's address. The endpoint validates every field,
+limits request volume, and fixes the recipient so it cannot be used as an open
+mail relay.
 
-So: publish the site, send yourself one test enquiry, click the activation link
-in the inbox, then send a second test to confirm it arrives. After that it runs
-by itself.
-
-Optionally, FormSubmit will then give you a random string to use in place of the
-address, which keeps the email out of the page source and away from scrapers —
-swap it into `data-to` if you want that.
-
-If the relay is unreachable, the visitor stays on the page and sees a clear
+If the endpoint is unreachable, the visitor stays on the page and sees a clear
 error instead of having a desktop mail application opened. There is also a
 **Send via WhatsApp** button that composes the same summary.
-
-To use a different provider instead, add `data-endpoint="..."` to the form
-(Formspree, Web3Forms and Netlify Forms all work) — the script prefers it.
 
 ## Languages
 
