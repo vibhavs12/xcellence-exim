@@ -1,0 +1,10 @@
+RewriteEngine On
+
+# Permanent redirects from the former WordPress URL structure.
+Redirect 301 /about-us/ /about.html
+Redirect 301 /contact-us/ /contact.html
+Redirect 301 /rice/ /rice.html
+Redirect 301 /tea-coffee/ /coffee.html
+Redirect 301 /spices/ /spices.html
+Redirect 301 /certificates/ /certificates.html
+Redirect 301 /sugar-icumsa-45/ /sugar.html

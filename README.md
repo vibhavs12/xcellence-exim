@@ -28,6 +28,31 @@ already committed, so it is a push plus one settings toggle.
 or push to **Vercel** or **Cloudflare Pages**. On traditional hosting
 (cPanel / Hostinger), upload the contents into `public_html/`.
 
+## SEO launch requirements
+
+The production domain must serve this build before its SEO changes can affect
+Google results. Do not leave the redesigned site only on the GitHub Pages
+preview: every canonical URL and the sitemap intentionally point to
+`https://xcellenceexim.com`.
+
+At launch:
+
+1. Replace the current WordPress site with this build, or connect
+   `xcellenceexim.com` as the GitHub Pages custom domain.
+2. Keep the one-to-one permanent redirects in `.htaccess` when deploying to
+   Apache. GitHub Pages cannot emit 301 responses, so the build also creates
+   zero-delay redirect pages for the former WordPress paths.
+3. Verify `https://xcellenceexim.com/robots.txt` and
+   `https://xcellenceexim.com/sitemap.xml` after cutover.
+4. Add the domain property in Google Search Console, submit `sitemap.xml`, and
+   request indexing for the home page and four product pages.
+5. Keep redirects active for at least one year and update profile or directory
+   links to their final canonical URLs.
+
+Run `python3 tools/seo-audit.py` after rebuilding to check titles, descriptions,
+canonicals, headings, structured data, image alt text, internal links and the
+sitemap.
+
 To replace the WordPress site on the same domain, upload these files to the web
 root and remove or rename the WordPress install. A few URLs change:
 

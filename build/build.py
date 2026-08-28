@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """Generates the redesigned Xcellence Exim static site into ../site/"""
+import html as html_lib
+import json
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from parts import (head, header, footer, cta_band, pagehead,
@@ -12,39 +14,40 @@ OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
 os.makedirs(OUT, exist_ok=True)
 
 def write(name, html):
-    with open(os.path.join(OUT, name), 'w', encoding='utf-8') as f:
+    path = os.path.join(OUT, name)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, 'w', encoding='utf-8') as f:
         f.write(html)
     print('  wrote', name, '(%.1f KB)' % (len(html) / 1024.0))
 
 
 def product_schema(name, desc, img, cat):
-    return f'''<script type="application/ld+json">
-{{
-  "@context": "https://schema.org",
-  "@type": "Product",
-  "name": "{name}",
-  "description": "{desc}",
-  "image": "{img}",
-  "category": "{cat}",
-  "brand": {{ "@type": "Brand", "name": "Xcellence Exim" }},
-  "offers": {{
-    "@type": "Offer",
-    "availability": "https://schema.org/InStock",
-    "priceCurrency": "USD",
-    "priceSpecification": {{ "@type": "PriceSpecification", "valueAddedTaxIncluded": false }},
-    "seller": {{ "@id": "{SITE}/#organization" }}
-  }}
-}}
-</script>
-'''
+    data = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": html_lib.unescape(name),
+        "description": html_lib.unescape(desc),
+        "image": img,
+        "category": cat,
+        "brand": {"@type": "Brand", "name": "Xcellence Exim"},
+        "countryOfOrigin": {"@type": "Country", "name": "India"},
+        "audience": {
+            "@type": "BusinessAudience",
+            "audienceType": "Importers, distributors, wholesalers and food manufacturers",
+        },
+        "seller": {"@id": f"{SITE}/#organization"},
+    }
+    return ('<script type="application/ld+json">\n' +
+            json.dumps(data, ensure_ascii=False, indent=2) +
+            '\n</script>\n')
 
 
 # =========================================================================
 # HOME
 # =========================================================================
 home = head(
-    "Xcellence Exim | Indian Exporter of Rice, Coffee, Spices &amp; Sugar ICUMSA 45",
-    "Xcellence Exim is an Indian merchant exporter supplying premium Basmati and non-Basmati rice, Arabica and Robusta coffee, Sannam S4 red chilli and Sugar ICUMSA 45 to importers worldwide. IEC, GST, FSSAI, MSME and APEDA registered.",
+    "Indian Agro Exporter &amp; Supplier | Rice, Coffee, Spices &amp; Sugar",
+    "Indian agricultural exporter supplying Basmati rice, non-Basmati rice, Arabica and Robusta coffee, spices, Sannam S4 chilli and ICUMSA 45 sugar to global importers.",
     "index.html",
     og_image=I['home_rice'],
 )
@@ -55,8 +58,8 @@ home += f"""
   <div class="wrap hero__inner">
     <div class="hero__copy">
       <span class="eyebrow">Merchant Exporter &middot; Kota, India</span>
-      <h1>Premium Indian agro commodities, <em>shipped with certainty</em></h1>
-      <p class="hero__sub">We supply rice, coffee, spices and refined sugar to importers, distributors and food manufacturers across global markets — sourced from verified mills, inspected against buyer specification, and backed by complete export documentation.</p>
+      <h1>Indian agricultural exports, <em>shipped with certainty</em></h1>
+      <p class="hero__sub">We are an Indian exporter and supplier of rice, coffee, spices and refined sugar for importers, distributors and food manufacturers worldwide — sourced from verified mills, inspected against buyer specification, and backed by complete export documentation.</p>
       <div class="hero__badges">
         <span class="pill pill--gold">IEC Registered</span>
         <span class="pill">FSSAI</span>
@@ -109,7 +112,7 @@ home += f"""
         <div class="card__body">
           <h3>Rice</h3>
           <p>Basmati (1121, 1509, 1718, 1885, 1401, Pusa, Traditional) and non-Basmati varieties including Sona Masoori, IR-64 and PR-26.</p>
-          <a class="card__link" href="rice.html">View specifications {ICON['arrow']}</a>
+          <a class="card__link" href="rice.html">View Indian rice specifications {ICON['arrow']}</a>
         </div>
       </article>
 
@@ -121,7 +124,7 @@ home += f"""
         <div class="card__body">
           <h3>Coffee</h3>
           <p>Green, roasted and instant coffee in Arabica and Robusta grades — PL, AC, RC and RP — from selected Indian estates.</p>
-          <a class="card__link" href="coffee.html">View specifications {ICON['arrow']}</a>
+          <a class="card__link" href="coffee.html">View Indian coffee specifications {ICON['arrow']}</a>
         </div>
       </article>
 
@@ -133,7 +136,7 @@ home += f"""
         <div class="card__body">
           <h3>Spices</h3>
           <p>Sannam S4 / S334 red chilli with bright colour and balanced heat, plus turmeric, cumin, cloves and cardamom.</p>
-          <a class="card__link" href="spices.html">View specifications {ICON['arrow']}</a>
+          <a class="card__link" href="spices.html">View Indian spice specifications {ICON['arrow']}</a>
         </div>
       </article>
 
@@ -145,9 +148,37 @@ home += f"""
         <div class="card__body">
           <h3>Sugar ICUMSA 45</h3>
           <p>Refined white crystal sugar from certified Indian mills, plus ICUMSA 100–150, brown sugar and raw sugar grades.</p>
-          <a class="card__link" href="sugar.html">View specifications {ICON['arrow']}</a>
+          <a class="card__link" href="sugar.html">View Indian sugar specifications {ICON['arrow']}</a>
         </div>
       </article>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head section-head--center reveal">
+      <span class="eyebrow">Importer sourcing</span>
+      <hr class="rule">
+      <h2>An Indian agricultural exporter for global buyers</h2>
+      <p class="lead">For importers comparing agricultural suppliers across Asia, we provide one accountable export partner for Indian-origin commodities from specification and sampling through packing, documentation and shipment.</p>
+    </div>
+    <div class="grid grid--3 reveal">
+      <div class="tile">
+        <span class="tile__icon">{ICON['globe']}</span>
+        <h3>Source directly from India</h3>
+        <p>Access verified Indian mills, processors and farmer groups for rice, coffee, spices and refined sugar without managing multiple suppliers.</p>
+      </div>
+      <div class="tile">
+        <span class="tile__icon">{ICON['lab']}</span>
+        <h3>Buy to your specification</h3>
+        <p>Confirm grade, moisture, packing, quantity and destination requirements before approval, supported by sampling and consignment-level quality checks.</p>
+      </div>
+      <div class="tile">
+        <span class="tile__icon">{ICON['ship']}</span>
+        <h3>Import with complete support</h3>
+        <p>Receive coordinated booking, inspection, export packing and the documents your clearing agent needs. <a href="export-process.html">See our export process</a>.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -229,13 +260,13 @@ write('index.html', home)
 # ABOUT
 # =========================================================================
 about = head(
-    "About Us | Xcellence Exim — Indian Agri-Export Company",
-    "Xcellence Exim is an India-based agri-export company delivering products that meet global food safety and quality standards, working closely with farmers, processors and certified facilities.",
+    "Indian Agricultural Export Company | About Xcellence Exim",
+    "Meet Xcellence Exim, an Indian agricultural export company sourcing rice, coffee, spices and sugar through verified mills, processors and farmer partners.",
     "about.html", og_image=I['about'])
 about += header("about.html")
 about += pagehead(
-    "Who We Are",
-    "An India-based agri-export company committed to delivering products that meet global food safety and quality standards.",
+    "Indian Agricultural Export Company",
+    "Xcellence Exim connects global importers with Indian rice, coffee, spices and sugar backed by verified sourcing, quality control and complete export support.",
     "About Us")
 
 about += f"""
@@ -267,22 +298,22 @@ about += f"""
       <div class="tile">
         <span class="tile__icon">{ICON['box']}</span>
         <h3>Premium Rice — Basmati &amp; Non-Basmati</h3>
-        <p>Premium-grade rice sourced from trusted Indian millers, carefully processed and graded to meet international export standards. Applications: food service, retail packaging, wholesale distribution and institutional supply.</p>
+        <p>Premium-grade rice sourced from trusted Indian millers, carefully processed and graded to meet international export standards. Applications: food service, retail packaging, wholesale distribution and institutional supply. <a href="rice.html">View Indian rice varieties and packing</a>.</p>
       </div>
       <div class="tile">
         <span class="tile__icon">{ICON['globe']}</span>
         <h3>Coffee</h3>
-        <p>High-quality Indian Arabica and Robusta sourced from selected growing regions, processed and graded for global markets. Includes green coffee beans, roasted beans and instant coffee as required.</p>
+        <p>High-quality Indian Arabica and Robusta sourced from selected growing regions, processed and graded for global markets. Includes green, roasted and instant coffee. <a href="coffee.html">View Indian coffee grades</a>.</p>
       </div>
       <div class="tile">
         <span class="tile__icon">{ICON['lab']}</span>
         <h3>Sugar ICUMSA 45</h3>
-        <p>Highly refined white crystal sugar suitable for food processing, the beverage industry and direct consumption, meeting international purity standards.</p>
+        <p>Highly refined white crystal sugar suitable for food processing, the beverage industry and direct consumption, meeting international purity standards. <a href="sugar.html">View Indian sugar grades and packing</a>.</p>
       </div>
       <div class="tile">
         <span class="tile__icon">{ICON['tag']}</span>
         <h3>Premium Red Chilli — Sannam S4 / S334</h3>
-        <p>Export-grade red chilli known for vibrant colour, balanced pungency and strong aroma, widely used in spice blending and food processing industries.</p>
+        <p>Export-grade red chilli known for vibrant colour, balanced pungency and strong aroma, widely used in spice blending and food processing. <a href="spices.html">View Indian spice specifications</a>.</p>
       </div>
       <div class="tile">
         <span class="tile__icon">{ICON['ship']}</span>
@@ -382,7 +413,7 @@ def product_page(fname, title, meta_desc, crumb, h1, lead, eyebrow,
     html += f"""
 <aside>
   <div class="aside-card">
-    <h3>Request pricing</h3>
+    <h3>Request {crumb} export pricing</h3>
     <p>Share your quantity, destination port and preferred Incoterms — we reply with a detailed offer within one business day.</p>
     <dl>{facts}</dl>
     <a class="btn btn--primary" href="contact.html#rfq">Request a Quotation</a>
@@ -404,7 +435,7 @@ def product_page(fname, title, meta_desc, crumb, h1, lead, eyebrow,
     <div class="section-head section-head--center reveal">
       <span class="eyebrow">{eyebrow}</span>
       <hr class="rule">
-      <h2>Product gallery</h2>
+      <h2>{crumb} export product gallery</h2>
     </div>
     <div class="gallery reveal">{imgs}</div>
   </div>
@@ -429,14 +460,14 @@ def chips(items):
 # ------------------------------- RICE
 product_page(
     "rice.html",
-    "Premium Indian Rice — Basmati &amp; Non-Basmati | Xcellence Exim",
-    "Export-grade Indian rice: 1121, 1509, 1718, 1885 and 1401 Basmati, Sharbati, Sugandha, Sona Masoori, IR-64 and PR-26. Cleaned, sorted, lab-tested and packed to buyer specification.",
-    "Rice", "Premium Indian Rice",
-    "Basmati and non-Basmati varieties sourced directly from certified and trusted mills — cleaned, sorted, lab-tested and packed to your specification.",
+    "Indian Rice Exporter &amp; Supplier | Basmati &amp; Non-Basmati",
+    "Indian rice exporter supplying 1121, 1509, 1718, 1885 and 1401 Basmati plus Sona Masoori, IR-64 and PR-26 to global importers in custom export packing.",
+    "Rice", "Indian Basmati &amp; Non-Basmati Rice Exporter",
+    "Source export-grade Indian Basmati and non-Basmati rice from verified mills — cleaned, sorted, lab-tested and packed to your import specification.",
     "Rice",
     [
         f"""<div class="spec-block reveal">
-  <h2>Overview</h2>
+  <h2>Indian rice supply for importers</h2>
   <p>We supply a wide range of premium-quality Indian rice sourced directly from certified and trusted mills. Every variety is cleaned, sorted, lab-tested and packed according to buyer specifications, so what arrives at your port matches the sample you approved.</p>
 </div>""",
         '<div class="spec-block reveal"><h2>Available varieties</h2>' + table(
@@ -473,14 +504,14 @@ product_page(
 # ------------------------------- COFFEE
 product_page(
     "coffee.html",
-    "Indian Coffee — Arabica &amp; Robusta, Green, Roasted &amp; Instant | Xcellence Exim",
-    "Export-grade Indian coffee: green, roasted and instant. Arabica Plantation (PL), Arabica Cherry (AC), Robusta Cherry AB (RC) and Robusta Parchment (RP) grades with custom packaging.",
-    "Coffee", "Premium Indian Coffee",
-    "High-quality Arabica and Robusta sourced directly from trusted Indian estates and growers — processed, graded and export-ready packed to your requirement.",
+    "Indian Coffee Exporter | Arabica, Robusta, Green &amp; Instant",
+    "Indian coffee exporter supplying green, roasted and instant Arabica and Robusta coffee in PL, AC, RC and RP grades with bulk, retail and private-label packing.",
+    "Coffee", "Indian Coffee Exporter — Arabica &amp; Robusta",
+    "Source Indian Arabica and Robusta coffee from selected estates — processed, graded and export-packed for roasters, distributors and private-label buyers.",
     "Coffee",
     [
         """<div class="spec-block reveal">
-  <h2>Overview</h2>
+  <h2>Indian coffee supply for roasters and distributors</h2>
   <p>We supply high-quality Arabica and Robusta coffee sourced directly from trusted Indian estates and growers. All coffee is processed, graded and export-ready packed as per buyer requirements — whether you are a roaster buying green beans in bulk or a brand needing finished retail packs.</p>
 </div>""",
         '<div class="spec-block reveal"><h2>Available forms</h2>' + table(
@@ -535,14 +566,14 @@ product_page(
 # ------------------------------- SPICES
 product_page(
     "spices.html",
-    "Indian Spices &amp; Sannam S4 Red Chilli | Xcellence Exim",
-    "Export-grade Sannam S4 / S334 red chilli with bright red colour and medium pungency, plus turmeric, cumin seeds, cloves and cardamom. Cleaned, sortex and stemless options available.",
-    "Spices", "Indian Spices &amp; Red Chilli",
-    "Premium Sannam S4 red chilli sourced directly from trusted Indian farms, known for medium pungency, bright red colour and balanced heat.",
+    "Indian Spices Exporter | Sannam S4 Chilli, Turmeric &amp; Cumin",
+    "Indian spices exporter supplying Sannam S4 red chilli, turmeric, cumin, cloves and cardamom. Cleaned, Sortex, stemless, bulk and private-label options.",
+    "Spices", "Indian Spices &amp; Sannam S4 Chilli Exporter",
+    "Source export-grade Sannam S4 red chilli and Indian spices for blending, food processing, wholesale distribution and retail packing.",
     "Spices",
     [
         """<div class="spec-block reveal">
-  <h2>Overview</h2>
+  <h2>Indian spices for wholesale and food processing</h2>
   <p>We supply high-quality Sannam S4 red chilli sourced directly from trusted farms in India. Known for its medium pungency, bright red colour and balanced heat, it is widely used across international markets in spice blending and industrial food processing.</p>
 </div>""",
         '<div class="spec-block reveal"><h2>Key specifications</h2>' + table(
@@ -575,14 +606,14 @@ product_page(
 # ------------------------------- SUGAR
 product_page(
     "sugar.html",
-    "Sugar ICUMSA 45 &amp; Refined Indian Sugar | Xcellence Exim",
-    "Refined and raw Indian sugar from certified mills: ICUMSA 45, ICUMSA 100–150, ICUMSA 200–600 brown sugar and raw sugar. 50 kg PP bags and 1 MT jumbo bags.",
-    "Sugar ICUMSA 45", "Sugar ICUMSA 45",
-    "High-quality refined and raw sugar sourced from certified Indian sugar mills — processed, tested and export-ready packed to buyer requirement.",
+    "Indian Sugar Exporter | ICUMSA 45 &amp; Refined Sugar Supplier",
+    "Indian sugar exporter supplying ICUMSA 45, ICUMSA 100–150, brown and raw sugar from certified mills in 25 kg, 50 kg and 1 MT export packing.",
+    "Sugar ICUMSA 45", "Indian Sugar Exporter — ICUMSA 45",
+    "Source refined and raw Indian sugar from certified mills — tested and export-packed for food manufacturers, distributors and wholesale importers.",
     "Sugar",
     [
         """<div class="spec-block reveal">
-  <h2>Overview</h2>
+  <h2>Indian sugar supply for importers and manufacturers</h2>
   <p>We supply high-quality refined and raw sugar sourced from certified Indian sugar mills. All sugar is processed, tested and export-ready packed as per buyer requirements, with grade selection matched to your end application.</p>
 </div>""",
         '<div class="spec-block reveal"><h2>Available grades</h2>' + table(
@@ -645,13 +676,13 @@ faq_schema += ",\n".join(
 faq_schema += '\n  ]\n}\n</script>\n'
 
 proc = head(
-    "Export Process &amp; Buyer FAQ | Xcellence Exim",
-    "How Xcellence Exim moves an order from enquiry to delivered container: sourcing, inspection, sampling, packing, documentation and shipment — plus answers to common importer questions.",
+    "Agricultural Export Process &amp; Buyer FAQ | Xcellence Exim",
+    "Learn how an Indian agricultural export order moves through sourcing, sampling, inspection, packing, documentation and container shipment, with answers for importers.",
     "export-process.html", extra_schema=faq_schema, og_image=I['hero3'])
 proc += header("export-process.html")
 proc += pagehead(
-    "Export Process &amp; Buyer FAQ",
-    "From first enquiry to delivered container — every stage documented, so you always know what is coming and when.",
+    "Agricultural Export Process &amp; Buyer FAQ",
+    "From importer enquiry to delivered container — every stage documented, so you know how your Indian agricultural shipment is sourced, checked, packed and dispatched.",
     "Export Process")
 
 steps = [
@@ -725,13 +756,13 @@ write('export-process.html', proc)
 # CERTIFICATES
 # =========================================================================
 certs = head(
-    "Certificates &amp; Registrations | Xcellence Exim",
-    "Xcellence Exim is registered and compliant: IEC, GST, FSSAI, MSME and APEDA. View our statutory certificates and registrations.",
+    "Indian Export Certificates: IEC, APEDA &amp; FSSAI | Xcellence Exim",
+    "Verify Xcellence Exim's Indian export registrations, including IEC, APEDA, FSSAI, GST and MSME credentials for agricultural commodity shipments.",
     "certificates.html", og_image=I['cert1'])
 certs += header("certificates.html")
 certs += pagehead(
-    "Certificates &amp; Registrations",
-    "Registered, compliant and export-ready. Select any certificate to view it full size.",
+    "Indian Export Certificates &amp; Registrations",
+    "Review our IEC, APEDA, FSSAI, GST and MSME credentials for compliant agricultural exports from India.",
     "Certificates")
 
 cert_items = [
@@ -787,13 +818,13 @@ write('certificates.html', certs)
 # CONTACT
 # =========================================================================
 contact = head(
-    "Contact Us | Xcellence Exim — Request a Quotation",
-    "Contact Xcellence Exim for export quotations on Indian rice, coffee, spices and Sugar ICUMSA 45. WhatsApp +91 79859 16897 or email sales@xcellenceexim.com.",
+    "Request an Export Quote | Indian Rice, Coffee, Spices &amp; Sugar",
+    "Request an export quotation for Indian rice, coffee, spices or ICUMSA 45 sugar. Send product, quantity, destination port, packing and Incoterms for pricing.",
     "contact.html", og_image=I['hero1'])
 contact += header("contact.html")
 contact += pagehead(
-    "Contact Us",
-    "Tell us the product, quantity, destination port and Incoterms — you will have a detailed offer from our export desk within one business day.",
+    "Request an Agricultural Export Quotation",
+    "Tell us the Indian product, grade, quantity, destination port, packing and Incoterms required for a detailed export offer within one business day.",
     "Contact")
 
 contact += f"""
@@ -954,12 +985,59 @@ write('contact.html', contact)
 # =========================================================================
 pages = ["", "about.html", "rice.html", "coffee.html", "spices.html",
          "sugar.html", "export-process.html", "certificates.html", "contact.html"]
-sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+page_images = {
+    "": (I["home_rice"], "Indian Basmati rice exporter and supplier"),
+    "about.html": (I["about"], "Xcellence Exim Indian agricultural export company"),
+    "rice.html": (I["rice1"], "Indian Basmati and non-Basmati rice for export"),
+    "coffee.html": (I["cof1"], "Indian Arabica and Robusta coffee for export"),
+    "spices.html": (I["spi1"], "Indian Sannam S4 red chilli and spices for export"),
+    "sugar.html": (I["sug1"], "Indian refined sugar ICUMSA 45 for export"),
+    "export-process.html": (I["order_process"], "Indian agricultural export order process"),
+    "certificates.html": (I["cert1"], "Xcellence Exim Indian export registrations"),
+    "contact.html": (I["home_logistics"], "Request an Indian agricultural export quotation"),
+}
+lastmod = "2026-08-28"
+sm = ('<?xml version="1.0" encoding="UTF-8"?>\n'
+      '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
+      'xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n')
 for p in pages:
-    pr = "1.0" if p == "" else ("0.9" if p in ("contact.html", "about.html") else "0.8")
-    sm += f"  <url><loc>{SITE}/{p}</loc><changefreq>monthly</changefreq><priority>{pr}</priority></url>\n"
+    image_url, image_title = page_images[p]
+    if not image_url.startswith(("http://", "https://")):
+        image_url = SITE + "/" + image_url.lstrip("/")
+    sm += (f"  <url><loc>{SITE}/{p}</loc><lastmod>{lastmod}</lastmod>"
+           f"<image:image><image:loc>{image_url}</image:loc>"
+           f"<image:title>{image_title}</image:title></image:image></url>\n")
 sm += "</urlset>\n"
 write('sitemap.xml', sm)
 write('robots.txt', f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n")
+
+# Preserve the existing WordPress URLs during migration. GitHub Pages cannot
+# emit server-side 301 responses, so these zero-delay meta refresh pages are
+# the permanent-redirect fallback recommended when HTTP redirects are not
+# available. Keep the matching server-side redirects on production if the host
+# supports them.
+legacy_urls = {
+    "about-us/index.html": "about.html",
+    "contact-us/index.html": "contact.html",
+    "rice/index.html": "rice.html",
+    "tea-coffee/index.html": "coffee.html",
+    "spices/index.html": "spices.html",
+    "certificates/index.html": "certificates.html",
+    "sugar-icumsa-45/index.html": "sugar.html",
+}
+for legacy_path, target in legacy_urls.items():
+    label = target.replace('.html', '').replace('-', ' ').title()
+    destination = f"../{target}"
+    write(legacy_path, f'''<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{label} — Xcellence Exim</title>
+<link rel="canonical" href="{SITE}/{target}">
+<meta name="robots" content="index, follow">
+<meta http-equiv="refresh" content="0; url={destination}">
+</head><body>
+<p>This page has moved to <a href="{destination}">{label}</a>.</p>
+</body></html>''')
 
 print('\nDone.')

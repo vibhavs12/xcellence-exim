@@ -89,12 +89,53 @@ NAV = [
     ("contact.html", "Contact", None),
 ]
 
+PAGE_NAMES = {
+    "index.html": "Indian Agricultural Exporter",
+    "about.html": "About Xcellence Exim",
+    "rice.html": "Indian Rice Exporter",
+    "coffee.html": "Indian Coffee Exporter",
+    "spices.html": "Indian Spices Exporter",
+    "sugar.html": "Indian Sugar Exporter",
+    "export-process.html": "Export Process and Buyer FAQ",
+    "certificates.html": "Export Certificates and Registrations",
+    "contact.html": "Request an Export Quotation",
+}
+
 
 def head(title, desc, page, extra_schema="", og_image=None):
     canonical = SITE + "/" + ("" if page == "index.html" else page)
     img = og_image or IMAGES["hero1"]
     if not img.startswith(("http://", "https://")):
         img = SITE + "/" + img.lstrip("/")
+    page_name = PAGE_NAMES.get(page, "Xcellence Exim")
+    website_schema = ""
+    breadcrumb_schema = ""
+    if page == "index.html":
+        website_schema = f'''<script type="application/ld+json">
+{{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": "{SITE}/#website",
+  "url": "{SITE}/",
+  "name": "Xcellence Exim",
+  "alternateName": "Xcellence Exim India",
+  "publisher": {{ "@id": "{SITE}/#organization" }},
+  "inLanguage": "en-IN"
+}}
+</script>
+'''
+    else:
+        breadcrumb_schema = f'''<script type="application/ld+json">
+{{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {{ "@type": "ListItem", "position": 1, "name": "Home", "item": "{SITE}/" }},
+    {{ "@type": "ListItem", "position": 2, "name": "{page_name}", "item": "{canonical}" }}
+  ]
+}}
+</script>
+'''
     return f"""<!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
@@ -103,7 +144,7 @@ def head(title, desc, page, extra_schema="", og_image=None):
 <title>{title}</title>
 <meta name="description" content="{desc}">
 <link rel="canonical" href="{canonical}">
-<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <meta name="theme-color" content="#0F3D2E">
 
 <meta property="og:type" content="website">
@@ -112,11 +153,13 @@ def head(title, desc, page, extra_schema="", og_image=None):
 <meta property="og:description" content="{desc}">
 <meta property="og:url" content="{canonical}">
 <meta property="og:image" content="{img}">
+<meta property="og:image:alt" content="{page_name} — Xcellence Exim">
 <meta property="og:locale" content="en_IN">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{title}">
 <meta name="twitter:description" content="{desc}">
 <meta name="twitter:image" content="{img}">
+<meta name="twitter:image:alt" content="{page_name} — Xcellence Exim">
 
 <link rel="icon" href="{IMAGES['logo']}">
 <link rel="apple-touch-icon" href="{IMAGES['logo']}">
@@ -132,11 +175,21 @@ def head(title, desc, page, extra_schema="", og_image=None):
   "@type": "Organization",
   "@id": "{SITE}/#organization",
   "name": "Xcellence Exim",
-  "description": "Indian merchant exporter of premium agricultural commodities \\u2014 rice, coffee, spices and sugar ICUMSA 45.",
+  "description": "Indian agricultural exporter and supplier of Basmati and non-Basmati rice, Arabica and Robusta coffee, Indian spices, Sannam S4 red chilli and sugar ICUMSA 45 for global importers.",
   "url": "{SITE}/",
   "logo": "{IMAGES['logo']}",
   "email": "{EMAIL_SALES}",
   "telephone": "{PHONE}",
+  "areaServed": "Worldwide",
+  "knowsAbout": ["Indian rice export", "Indian coffee export", "Indian spices export", "Sugar ICUMSA 45 export", "Agricultural export documentation"],
+  "contactPoint": {{
+    "@type": "ContactPoint",
+    "contactType": "export sales",
+    "email": "{EMAIL_SALES}",
+    "telephone": "{PHONE}",
+    "availableLanguage": ["English", "Hindi"],
+    "areaServed": "Worldwide"
+  }},
   "address": {{
     "@type": "PostalAddress",
     "streetAddress": "Ashirwad Neelanchal, B-402, Shrinathpuram",
@@ -148,6 +201,7 @@ def head(title, desc, page, extra_schema="", og_image=None):
   "sameAs": ["{FB}", "{IG}", "{LI}"]
 }}
 </script>
+{website_schema}{breadcrumb_schema}
 {extra_schema}
 <script>window.gtranslateSettings = {{"default_language":"en","detect_browser_language":false,"wrapper_selector":".gtranslate_wrapper","switcher_horizontal_position":"inline"}};</script>
 <script src="https://cdn.gtranslate.net/widgets/latest/dropdown.js" defer></script>

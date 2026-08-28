@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://xcellenceexim.com/</loc><changefreq>monthly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://xcellenceexim.com/about.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://xcellenceexim.com/rice.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://xcellenceexim.com/coffee.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://xcellenceexim.com/spices.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://xcellenceexim.com/sugar.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://xcellenceexim.com/export-process.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://xcellenceexim.com/certificates.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://xcellenceexim.com/contact.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url><loc>https://xcellenceexim.com/</loc><lastmod>2026-08-28</lastmod><image:image><image:loc>https://xcellenceexim.com/assets/img/home/rice.jpg</image:loc><image:title>Indian Basmati rice exporter and supplier</image:title></image:image></url>
+  <url><loc>https://xcellenceexim.com/about.html</loc><lastmod>2026-08-28</lastmod><image:image><image:loc>https://xcellenceexim.com/assets/img/home/verified-sourcing.jpg</image:loc><image:title>Xcellence Exim Indian agricultural export company</image:title></image:image></url>
+  <url><loc>https://xcellenceexim.com/rice.html</loc><lastmod>2026-08-28</lastmod><image:image><image:loc>https://xcellenceexim.com/wp-content/uploads/2025/07/1.png</image:loc><image:title>Indian Basmati and non-Basmati rice for export</image:title></image:image></url>
+  <url><loc>https://xcellenceexim.com/coffee.html</loc><lastmod>2026-08-28</lastmod><image:image><image:loc>https://xcellenceexim.com/wp-content/uploads/2025/07/7.png</image:loc><image:title>Indian Arabica and Robusta coffee for export</image:title></image:image></url>
+  <url><loc>https://xcellenceexim.com/spices.html</loc><lastmod>2026-08-28</lastmod><image:image><image:loc>https://xcellenceexim.com/wp-content/uploads/2025/07/10.png</image:loc><image:title>Indian Sannam S4 red chilli and spices for export</image:title></image:image></url>
+  <url><loc>https://xcellenceexim.com/sugar.html</loc><lastmod>2026-08-28</lastmod><image:image><image:loc>https://xcellenceexim.com/wp-content/uploads/2026/05/Paneer-Bhurji-35.png</image:loc><image:title>Indian refined sugar ICUMSA 45 for export</image:title></image:image></url>
+  <url><loc>https://xcellenceexim.com/export-process.html</loc><lastmod>2026-08-28</lastmod><image:image><image:loc>https://xcellenceexim.com/assets/img/home/order-process.jpg</image:loc><image:title>Indian agricultural export order process</image:title></image:image></url>
+  <url><loc>https://xcellenceexim.com/certificates.html</loc><lastmod>2026-08-28</lastmod><image:image><image:loc>https://xcellenceexim.com/wp-content/uploads/2025/09/Screenshot-2025-09-25-194937.png</image:loc><image:title>Xcellence Exim Indian export registrations</image:title></image:image></url>
+  <url><loc>https://xcellenceexim.com/contact.html</loc><lastmod>2026-08-28</lastmod><image:image><image:loc>https://xcellenceexim.com/assets/img/home/export-documentation.jpg</image:loc><image:title>Request an Indian agricultural export quotation</image:title></image:image></url>
 </urlset>
