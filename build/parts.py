@@ -28,6 +28,7 @@ IMAGES = {
     "home_spices": "assets/img/home/spices.jpg",
     "home_sugar":  "assets/img/home/sugar.jpg",
     "home_logistics": "assets/img/home/export-documentation.jpg",
+    "order_process": "assets/img/home/order-process.jpg",
     "about":  "assets/img/home/verified-sourcing.jpg",
     "rice1":  IMG + "/2025/07/1.png",
     "rice2":  IMG + "/2025/07/2.png",

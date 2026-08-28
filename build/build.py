@@ -679,7 +679,7 @@ proc += f"""
         <ol class="steps">{steps_html}</ol>
       </div>
       <div class="split__media">
-        <img src="{I['hero3']}" alt="Export logistics and container shipment" width="800" height="600" loading="lazy">
+        <img src="{I['order_process']}" alt="Agricultural export order progressing from sample approval to container loading" width="800" height="600" loading="lazy">
       </div>
     </div>
   </div>
