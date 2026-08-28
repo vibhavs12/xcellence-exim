@@ -5,6 +5,7 @@ SITE = "https://xcellenceexim.com"
 PHONE = "+91 79859 16897"
 WA = "917985916897"
 EMAIL_SALES = "sales@xcellenceexim.com"
+EMAIL_INFO = "info@xcellenceexim.com"
 EMAIL_DIR = "ashwani@xcellenceexim.com"
 FB = "https://www.facebook.com/profile.php?id=61578054179792"
 IG = "https://www.instagram.com/xcellence_exim"
@@ -21,7 +22,11 @@ IMAGES = {
     "hero2":  IMG + "/2025/09/spice-shop-36.png",
     "hero3":  IMG + "/2025/09/spice-shop-38.png",
     "hero4":  IMG + "/2025/09/spice-shop-40.png",
-    "about":  IMG + "/2026/07/Supplier-Network-Strength-4.png",
+    "home_rice":   "assets/img/home/rice.jpg",
+    "home_coffee": "assets/img/home/coffee.jpg",
+    "home_spices": "assets/img/home/spices.jpg",
+    "home_sugar":  "assets/img/home/sugar.jpg",
+    "about":  "assets/img/home/verified-sourcing.jpg",
     "rice1":  IMG + "/2025/07/1.png",
     "rice2":  IMG + "/2025/07/2.png",
     "rice3":  IMG + "/2025/07/3.png",
@@ -85,6 +90,8 @@ NAV = [
 def head(title, desc, page, extra_schema="", og_image=None):
     canonical = SITE + "/" + ("" if page == "index.html" else page)
     img = og_image or IMAGES["hero1"]
+    if not img.startswith(("http://", "https://")):
+        img = SITE + "/" + img.lstrip("/")
     return f"""<!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>

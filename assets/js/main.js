@@ -695,8 +695,8 @@
      after that every enquiry is delivered automatically. Until it is clicked,
      submissions are held rather than delivered.
 
-     If the relay is ever unreachable, the form falls back to opening the
-     visitor's mail client with the same content, so an enquiry is never lost.
+     If the relay is unreachable, the form keeps the visitor on the page and
+     shows a clear error. It never launches a desktop mail application.
      ---------------------------------------------------------------------- */
   var form = $('#rfq-form');
   if (form) {
@@ -806,14 +806,6 @@
       }
     };
 
-    function mailtoFallback() {
-      var url = 'mailto:' + TO_EMAIL +
-        (CC_EMAIL ? '?cc=' + encodeURIComponent(CC_EMAIL) + '&' : '?') +
-        'subject=' + encodeURIComponent(subjectLine()) +
-        '&body=' + encodeURIComponent(asText());
-      window.location.href = url;
-    }
-
     form.addEventListener('submit', function (e) {
       e.preventDefault();
 
@@ -848,9 +840,7 @@
         show('ok', 'Thank you — your enquiry is on its way to our export desk. ' +
                    'We reply within one business day, usually sooner.');
       }).catch(function () {
-        show('err', 'We could not send that automatically. Your email app is opening ' +
-                    'with the enquiry ready — or use the WhatsApp button instead.');
-        setTimeout(mailtoFallback, 900);
+        show('err', 'We could not send your enquiry right now. Please try again or use the WhatsApp button below.');
       }).then(function () {
         busy(false);
       });

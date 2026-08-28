@@ -90,9 +90,9 @@ Optionally, FormSubmit will then give you a random string to use in place of the
 address, which keeps the email out of the page source and away from scrapers —
 swap it into `data-to` if you want that.
 
-If the relay is ever unreachable, the form falls back to opening the visitor's
-mail client with the identical content, so an enquiry is never silently lost.
-There is also a **Send via WhatsApp** button that composes the same summary.
+If the relay is unreachable, the visitor stays on the page and sees a clear
+error instead of having a desktop mail application opened. There is also a
+**Send via WhatsApp** button that composes the same summary.
 
 To use a different provider instead, add `data-endpoint="..."` to the form
 (Formspree, Web3Forms and Netlify Forms all work) — the script prefers it.

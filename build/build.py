@@ -3,7 +3,8 @@
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from parts import (head, header, footer, cta_band, pagehead,
-                   IMAGES as I, ICON, SITE, WA, EMAIL_SALES, EMAIL_DIR, PHONE)
+                   IMAGES as I, ICON, SITE, WA, EMAIL_SALES, EMAIL_INFO,
+                   EMAIL_DIR, PHONE)
 
 # Pages are written to the repository root so GitHub Pages can serve
 # them directly (Settings -> Pages -> Deploy from branch: main / root).
@@ -45,7 +46,7 @@ home = head(
     "Xcellence Exim | Indian Exporter of Rice, Coffee, Spices &amp; Sugar ICUMSA 45",
     "Xcellence Exim is an Indian merchant exporter supplying premium Basmati and non-Basmati rice, Arabica and Robusta coffee, Sannam S4 red chilli and Sugar ICUMSA 45 to importers worldwide. IEC, GST, FSSAI, MSME and APEDA registered.",
     "index.html",
-    og_image=I['hero1'],
+    og_image=I['home_rice'],
 )
 home += header("index.html")
 
@@ -70,10 +71,10 @@ home += f"""
     </div>
     <div class="hero__media">
       <div class="hero__grid">
-        <figure><img src="{I['hero1']}" alt="Premium Indian basmati rice ready for export" width="600" height="600" fetchpriority="high"></figure>
-        <figure><img src="{I['hero2']}" alt="Indian spices sorted for export packing" width="600" height="600"></figure>
-        <figure><img src="{I['hero3']}" alt="Export-grade agricultural commodities in bulk" width="600" height="600" loading="lazy"></figure>
-        <figure><img src="{I['hero4']}" alt="Graded produce prepared for international shipment" width="600" height="600" loading="lazy"></figure>
+        <figure><img src="{I['home_rice']}" alt="Premium Indian basmati rice ready for export" width="600" height="600" fetchpriority="high"></figure>
+        <figure><img src="{I['home_coffee']}" alt="Indian Arabica and Robusta coffee beans" width="600" height="600"></figure>
+        <figure><img src="{I['home_spices']}" alt="Sannam red chillies and Indian spices" width="600" height="600" loading="lazy"></figure>
+        <figure><img src="{I['home_sugar']}" alt="Refined white crystal sugar ICUMSA 45" width="600" height="600" loading="lazy"></figure>
       </div>
     </div>
   </div>
@@ -102,7 +103,7 @@ home += f"""
     <div class="grid grid--4 reveal">
       <article class="card">
         <div class="card__media">
-          <img src="{I['rice2']}" alt="Premium Indian basmati rice grains" width="600" height="450" loading="lazy">
+          <img src="{I['home_rice']}" alt="Premium Indian basmati rice grains" width="600" height="450" loading="lazy">
           <span class="card__tag">HSN 1006</span>
         </div>
         <div class="card__body">
@@ -114,7 +115,7 @@ home += f"""
 
       <article class="card">
         <div class="card__media">
-          <img src="{I['cof3']}" alt="Indian arabica and robusta coffee beans" width="600" height="450" loading="lazy">
+          <img src="{I['home_coffee']}" alt="Indian arabica and robusta coffee beans" width="600" height="450" loading="lazy">
           <span class="card__tag">HSN 0901</span>
         </div>
         <div class="card__body">
@@ -126,7 +127,7 @@ home += f"""
 
       <article class="card">
         <div class="card__media">
-          <img src="{I['spi3']}" alt="Sannam S4 red chilli for export" width="600" height="450" loading="lazy">
+          <img src="{I['home_spices']}" alt="Sannam S4 red chilli for export" width="600" height="450" loading="lazy">
           <span class="card__tag">HSN 0904</span>
         </div>
         <div class="card__body">
@@ -138,7 +139,7 @@ home += f"""
 
       <article class="card">
         <div class="card__media">
-          <img src="{I['sug2']}" alt="Refined white crystal sugar ICUMSA 45" width="600" height="450" loading="lazy">
+          <img src="{I['home_sugar']}" alt="Refined white crystal sugar ICUMSA 45" width="600" height="450" loading="lazy">
           <span class="card__tag">HSN 1701</span>
         </div>
         <div class="card__body">
@@ -154,7 +155,7 @@ home += f"""
 <section class="section section--tint">
   <div class="wrap">
     <div class="split reveal">
-      <div class="split__media">
+      <div class="split__media split__media--sourcing">
         <img src="{I['about']}" alt="Xcellence Exim supplier and sourcing network across India" width="800" height="600" loading="lazy">
       </div>
       <div>
@@ -389,7 +390,7 @@ def product_page(fname, title, meta_desc, crumb, h1, lead, eyebrow,
     <hr>
     <dl translate="no" class="notranslate">
       <dt>HSN Code</dt><dd>{hsn}</dd>
-      <dt>Direct line</dt><dd><a href="mailto:{EMAIL_SALES}" style="color:#DFBE4B">{EMAIL_SALES}</a></dd>
+      <dt>Direct line</dt><dd><a href="mailto:{EMAIL_INFO}" style="color:#DFBE4B">{EMAIL_INFO}</a></dd>
     </dl>
   </div>
 </aside>
@@ -466,7 +467,7 @@ product_page(
     product_schema("Premium Indian Rice — Basmati &amp; Non-Basmati",
                    "Export-grade Indian Basmati and non-Basmati rice, cleaned, sorted, lab-tested and packed to buyer specification.",
                    I['rice2'], "Rice"),
-    "10063020 &middot; 10063010",
+    "100630",
 )
 
 # ------------------------------- COFFEE
@@ -808,7 +809,8 @@ contact += f"""
         </div>
 
         <div class="form-card reveal">
-          <form id="rfq-form" novalidate
+          <form id="rfq-form" novalidate method="POST"
+                action="https://formsubmit.co/{EMAIL_SALES}"
                 data-to="{EMAIL_SALES}"
                 data-cc="{EMAIL_DIR}"
                 data-whatsapp="{WA}">
@@ -816,7 +818,8 @@ contact += f"""
                  FormSubmit (free, no account, no server). The first submission
                  sends a one-time activation link to {EMAIL_SALES} — click it
                  once and delivery is automatic from then on.
-                 To switch providers instead, add data-endpoint="..." above. -->
+                 To switch providers instead, add data-endpoint="..." above.
+                 The action is a no-JavaScript fallback and never opens a mail app. -->
             <div class="field-grid">
               <div class="field">
                 <label for="f-name">Full name <span class="req" aria-hidden="true">*</span></label>
