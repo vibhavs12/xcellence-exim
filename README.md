@@ -5,17 +5,18 @@ dependencies — open `index.html` locally, or upload the folder to any host.
 
 ## Pages
 
-| File | Page |
+| Canonical path | Page |
 |---|---|
-| `index.html` | Home |
-| `about.html` | About Us |
-| `rice.html` | Rice — Basmati & Non-Basmati |
-| `coffee.html` | Coffee — Arabica & Robusta |
-| `spices.html` | Spices & Sannam S4 Red Chilli |
-| `sugar.html` | Sugar ICUMSA 45 |
-| `export-process.html` | Export Process + Buyer FAQ (new page) |
-| `certificates.html` | Certificates & Registrations |
-| `contact.html` | Contact + RFQ form |
+| `/` | Home |
+| `/about-us/` | About Us |
+| `/rice/` | Rice — Basmati & Non-Basmati |
+| `/tea-coffee/` | Coffee — Arabica & Robusta |
+| `/spices/` | Spices & Sannam S4 Red Chilli |
+| `/sugar-icumsa-45/` | Sugar ICUMSA 45 |
+| `/export-process/` | Export Process + Buyer FAQ |
+| `/certificates/` | Certificates & Registrations |
+| `/contact-us/` | Contact + RFQ form |
+| `/privacy/` | Privacy Notice |
 
 Plus `sitemap.xml` and `robots.txt`.
 
@@ -39,35 +40,25 @@ At launch:
 
 1. Replace the current WordPress site with this build, or connect
    `xcellenceexim.com` as the GitHub Pages custom domain.
-2. Keep the one-to-one permanent redirects in `.htaccess` when deploying to
-   Apache. GitHub Pages cannot emit 301 responses, so the build also creates
-   zero-delay redirect pages for the former WordPress paths.
+2. Keep the `.htaccess` redirects when deploying to Apache. Existing WordPress
+   paths are the canonical content locations; redirects only consolidate the
+   temporary redesign-preview `.html` URLs.
 3. Verify `https://xcellenceexim.com/robots.txt` and
    `https://xcellenceexim.com/sitemap.xml` after cutover.
 4. Add the domain property in Google Search Console, submit `sitemap.xml`, and
    request indexing for the home page and four product pages.
 5. Keep redirects active for at least one year and update profile or directory
-   links to their final canonical URLs.
+   links to their final canonical clean URLs.
 
 Run `python3 tools/seo-audit.py` after rebuilding to check titles, descriptions,
 canonicals, headings, structured data, image alt text, internal links and the
 sitemap.
 
-To replace the WordPress site on the same domain, upload these files to the web
-root and remove or rename the WordPress install. A few URLs change:
-
-| Old URL | New URL |
-|---|---|
-| `/about-us/` | `/about.html` |
-| `/rice/` | `/rice.html` |
-| `/tea-coffee/` | `/coffee.html` |
-| `/spices/` | `/spices.html` |
-| `/sugar-icumsa-45/` | `/sugar.html` |
-| `/certificates/` | `/certificates.html` |
-| `/contact-us/` | `/contact.html` |
-
-Add 301 redirects for those so existing Google rankings carry over — a
-`_redirects` file on Netlify, or `.htaccess` rules on Apache.
+To replace the WordPress site on the same domain, upload the repository contents
+to the web root and remove or rename the WordPress install. The build preserves
+the existing public URL paths, so the cutover does not require old-to-new page
+redirects. Apache redirects are included only for previously shared `.html`
+preview links.
 
 ## Images
 
@@ -81,7 +72,7 @@ bash tools/use-local-images.sh  # point the HTML at the local copies
 
 ## The enquiry form
 
-`contact.html` has a structured RFQ form — product, quantity, destination port,
+`/contact-us/` has a structured RFQ form — product, quantity, destination port,
 Incoterms, packing. The visitor never leaves the site; on submit it emails a
 formatted enquiry to the sales desk with the director copied in:
 
@@ -99,6 +90,17 @@ Both addresses are set on the `<form>` tag, so changing them is a one-line edit:
 <form id="rfq-form" data-to="sales@xcellenceexim.com"
                     data-cc="ashwani@xcellenceexim.com" ...>
 ```
+
+The form requires acknowledgement of the site Privacy Notice. Update and
+redeploy `integrations/google-apps-script/Code.gs` so the server-side endpoint
+enforces the same requirement.
+
+## Analytics and preview indexing
+
+GA4 property `G-XFVMBYF6P9` loads only on `xcellenceexim.com` and only after the
+visitor accepts optional analytics. GitHub Pages previews do not load analytics
+and switch their rendered robots directive to `noindex, nofollow`; all canonical
+URLs continue to point to production.
 
 ### ⚠️ One-time activation — do this before going live
 

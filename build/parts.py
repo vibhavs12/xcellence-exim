@@ -2,6 +2,7 @@
 """Shared chrome (head, header, drawer, footer) for the Xcellence Exim site."""
 
 SITE = "https://xcellenceexim.com"
+GA4_ID = "G-XFVMBYF6P9"
 PHONE = "+91 79859 16897"
 WA = "917985916897"
 EMAIL_SALES = "sales@xcellenceexim.com"
@@ -75,6 +76,35 @@ ICON = {
     "tag": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.6 13.4 12 22l-9-9V4a1 1 0 0 1 1-1h8z"/><circle cx="7.5" cy="7.5" r="1.4"/></svg>',
 }
 
+PAGE_ROUTES = {
+    "index.html": "",
+    "about.html": "about-us/",
+    "rice.html": "rice/",
+    "coffee.html": "tea-coffee/",
+    "spices.html": "spices/",
+    "sugar.html": "sugar-icumsa-45/",
+    "export-process.html": "export-process/",
+    "certificates.html": "certificates/",
+    "contact.html": "contact-us/",
+    "privacy.html": "privacy/",
+}
+
+
+def route_href(page):
+    """Root-relative-with-base link used by both home and nested pages."""
+    route = PAGE_ROUTES[page]
+    return route or "./"
+
+
+def public_url(page):
+    return SITE + "/" + PAGE_ROUTES[page]
+
+
+def output_path(page):
+    route = PAGE_ROUTES[page]
+    return "index.html" if not route else route + "index.html"
+
+
 NAV = [
     ("index.html", "Home", None),
     ("about.html", "About Us", None),
@@ -99,11 +129,13 @@ PAGE_NAMES = {
     "export-process.html": "Export Process and Buyer FAQ",
     "certificates.html": "Export Certificates and Registrations",
     "contact.html": "Request an Export Quotation",
+    "privacy.html": "Privacy Notice",
 }
 
 
 def head(title, desc, page, extra_schema="", og_image=None):
-    canonical = SITE + "/" + ("" if page == "index.html" else page)
+    canonical = public_url(page)
+    base = "" if page == "index.html" else '<base href="../">\n'
     img = og_image or IMAGES["hero1"]
     if not img.startswith(("http://", "https://")):
         img = SITE + "/" + img.lstrip("/")
@@ -141,7 +173,7 @@ def head(title, desc, page, extra_schema="", og_image=None):
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>{title}</title>
+{base}<title>{title}</title>
 <meta name="description" content="{desc}">
 <link rel="canonical" href="{canonical}">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
@@ -203,6 +235,34 @@ def head(title, desc, page, extra_schema="", og_image=None):
 </script>
 {website_schema}{breadcrumb_schema}
 {extra_schema}
+<script>
+/* Keep the GitHub Pages preview out of search and load analytics only after
+   consent on the production domain. Canonicals always point to production. */
+(function () {{
+  var preview = /\\.github\\.io$/i.test(location.hostname);
+  if (preview) {{
+    var robots = document.querySelector('meta[name="robots"]');
+    if (robots) robots.content = 'noindex, nofollow';
+  }}
+  window.XE_GA4_ID = "{GA4_ID}";
+  window.XE_IS_PRODUCTION = /(^|\\.)xcellenceexim\\.com$/i.test(location.hostname);
+  window.xeLoadAnalytics = function () {{
+    if (!window.XE_IS_PRODUCTION || document.querySelector('script[data-xe-ga4]')) return;
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = window.gtag || function () {{ window.dataLayer.push(arguments); }};
+    window.gtag('js', new Date());
+    window.gtag('config', window.XE_GA4_ID, {{ anonymize_ip: true }});
+    var script = document.createElement('script');
+    script.async = true;
+    script.dataset.xeGa4 = 'true';
+    script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(window.XE_GA4_ID);
+    document.head.appendChild(script);
+  }};
+  try {{
+    if (localStorage.getItem('xe-analytics-consent') === 'granted') window.xeLoadAnalytics();
+  }} catch (e) {{ /* storage can be unavailable in privacy modes */ }}
+}}());
+</script>
 <script>window.gtranslateSettings = {{"default_language":"en","detect_browser_language":false,"wrapper_selector":".gtranslate_wrapper","switcher_horizontal_position":"inline"}};</script>
 <script src="https://cdn.gtranslate.net/widgets/latest/dropdown.js" defer></script>
 <script src="assets/js/languages.js" defer></script>
@@ -422,11 +482,22 @@ def footer():
 
   <div class="wrap">
     <div class="footer__bottom">
-      <p>&copy; <span data-year>2026</span> Xcellence Exim. All rights reserved.</p>
+      <p>&copy; <span data-year>2026</span> Xcellence Exim. All rights reserved. &middot; <a href="privacy.html">Privacy Notice</a></p>
       <p translate="no" class="notranslate">GST No: 08AAAFX5073E1Z6</p>
     </div>
   </div>
 </footer>
+
+<aside class="consent" data-consent-banner hidden aria-label="Analytics privacy choices">
+  <div>
+    <strong>Privacy choices</strong>
+    <p>We use optional Google Analytics cookies to understand website usage. The site works without them. Read our <a href="privacy.html">Privacy Notice</a>.</p>
+  </div>
+  <div class="consent__actions">
+    <button type="button" class="btn btn--outline" data-consent="denied">Decline</button>
+    <button type="button" class="btn btn--primary" data-consent="granted">Accept analytics</button>
+  </div>
+</aside>
 
 <a class="wa-float" href="https://wa.me/{WA}" target="_blank" rel="noopener" aria-label="Chat with Xcellence Exim on WhatsApp">{ICON['wa']}</a>
 

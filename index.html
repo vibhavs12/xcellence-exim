@@ -14,13 +14,13 @@
 <meta property="og:title" content="Indian Agro Exporter &amp; Supplier | Rice, Coffee, Spices &amp; Sugar">
 <meta property="og:description" content="Indian agricultural exporter supplying Basmati rice, non-Basmati rice, Arabica and Robusta coffee, spices, Sannam S4 chilli and ICUMSA 45 sugar to global importers.">
 <meta property="og:url" content="https://xcellenceexim.com/">
-<meta property="og:image" content="https://xcellenceexim.com/assets/img/home/rice.jpg">
+<meta property="og:image" content="https://xcellenceexim.com/wp-content/uploads/2025/07/1.png">
 <meta property="og:image:alt" content="Indian Agricultural Exporter — Xcellence Exim">
 <meta property="og:locale" content="en_IN">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Indian Agro Exporter &amp; Supplier | Rice, Coffee, Spices &amp; Sugar">
 <meta name="twitter:description" content="Indian agricultural exporter supplying Basmati rice, non-Basmati rice, Arabica and Robusta coffee, spices, Sannam S4 chilli and ICUMSA 45 sugar to global importers.">
-<meta name="twitter:image" content="https://xcellenceexim.com/assets/img/home/rice.jpg">
+<meta name="twitter:image" content="https://xcellenceexim.com/wp-content/uploads/2025/07/1.png">
 <meta name="twitter:image:alt" content="Indian Agricultural Exporter — Xcellence Exim">
 
 <link rel="icon" href="https://xcellenceexim.com/wp-content/uploads/2026/07/Screenshot-2026-07-15-180236.png">
@@ -77,6 +77,34 @@
 </script>
 
 
+<script>
+/* Keep the GitHub Pages preview out of search and load analytics only after
+   consent on the production domain. Canonicals always point to production. */
+(function () {
+  var preview = /\.github\.io$/i.test(location.hostname);
+  if (preview) {
+    var robots = document.querySelector('meta[name="robots"]');
+    if (robots) robots.content = 'noindex, nofollow';
+  }
+  window.XE_GA4_ID = "G-XFVMBYF6P9";
+  window.XE_IS_PRODUCTION = /(^|\.)xcellenceexim\.com$/i.test(location.hostname);
+  window.xeLoadAnalytics = function () {
+    if (!window.XE_IS_PRODUCTION || document.querySelector('script[data-xe-ga4]')) return;
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+    window.gtag('js', new Date());
+    window.gtag('config', window.XE_GA4_ID, { anonymize_ip: true });
+    var script = document.createElement('script');
+    script.async = true;
+    script.dataset.xeGa4 = 'true';
+    script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(window.XE_GA4_ID);
+    document.head.appendChild(script);
+  };
+  try {
+    if (localStorage.getItem('xe-analytics-consent') === 'granted') window.xeLoadAnalytics();
+  } catch (e) { /* storage can be unavailable in privacy modes */ }
+}());
+</script>
 <script>window.gtranslateSettings = {"default_language":"en","detect_browser_language":false,"wrapper_selector":".gtranslate_wrapper","switcher_horizontal_position":"inline"};</script>
 <script src="https://cdn.gtranslate.net/widgets/latest/dropdown.js" defer></script>
 <script src="assets/js/languages.js" defer></script>
@@ -103,11 +131,11 @@
 
 <header class="site-header">
   <nav class="wrap nav" aria-label="Primary">
-    <a class="brand" href="index.html" aria-label="Xcellence Exim — home">
+    <a class="brand" href="./" aria-label="Xcellence Exim — home">
       <img src="https://xcellenceexim.com/wp-content/uploads/2026/07/Screenshot-2026-07-15-180236.png" alt="Xcellence Exim — Indian Agro Exporter" width="180" height="46">
     </a>
 
-    <ul class="nav__menu"><li><a class="nav__link" href="index.html" aria-current="page">Home</a></li><li><a class="nav__link" href="about.html">About Us</a></li><li class="has-dropdown"><button type="button" class="nav__link" aria-expanded="false" aria-haspopup="true">Our Products<svg class="nav__caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><ul class="dropdown"><li><a href="rice.html">Rice</a></li><li><a href="coffee.html">Coffee</a></li><li><a href="spices.html">Spices &amp; Red Chilli</a></li><li><a href="sugar.html">Sugar ICUMSA 45</a></li></ul></li><li><a class="nav__link" href="export-process.html">Export Process</a></li><li><a class="nav__link" href="certificates.html">Certificates</a></li><li><a class="nav__link" href="contact.html">Contact</a></li></ul>
+    <ul class="nav__menu"><li><a class="nav__link" href="./" aria-current="page">Home</a></li><li><a class="nav__link" href="about-us/">About Us</a></li><li class="has-dropdown"><button type="button" class="nav__link" aria-expanded="false" aria-haspopup="true">Our Products<svg class="nav__caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><ul class="dropdown"><li><a href="rice/">Rice</a></li><li><a href="tea-coffee/">Coffee</a></li><li><a href="spices/">Spices &amp; Red Chilli</a></li><li><a href="sugar-icumsa-45/">Sugar ICUMSA 45</a></li></ul></li><li><a class="nav__link" href="export-process/">Export Process</a></li><li><a class="nav__link" href="certificates/">Certificates</a></li><li><a class="nav__link" href="contact-us/">Contact</a></li></ul>
 
     <div class="nav__actions">
       <span data-lang-desktop><div class="langpick notranslate" translate="no">
@@ -131,7 +159,7 @@
         </div>
       </div>
       <div class="gtranslate_wrapper"></div></span>
-      <a class="btn btn--primary btn--desktop" href="contact.html#rfq"><span>Request a Quote</span></a>
+      <a class="btn btn--primary btn--desktop" href="contact-us/#rfq"><span>Request a Quote</span></a>
       <button type="button" class="nav__toggle" aria-expanded="false" aria-controls="drawer" aria-label="Open menu"><svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg><svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
     </div>
   </nav>
@@ -153,26 +181,26 @@
       </div>
 
       <ul class="drawer__nav">
-        <li><a href="index.html" aria-current="page">Home</a></li>
-        <li><a href="about.html">About Us</a></li>
+        <li><a href="./" aria-current="page">Home</a></li>
+        <li><a href="about-us/">About Us</a></li>
         <li>
           <button type="button" class="drawer__acc" aria-expanded="false" aria-controls="drawer-products">
             Our Products <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
           </button>
           <ul class="drawer__sub" id="drawer-products">
-            <li><a href="rice.html">Rice</a></li>
-            <li><a href="coffee.html">Coffee</a></li>
-            <li><a href="spices.html">Spices &amp; Red Chilli</a></li>
-            <li><a href="sugar.html">Sugar ICUMSA 45</a></li>
+            <li><a href="rice/">Rice</a></li>
+            <li><a href="tea-coffee/">Coffee</a></li>
+            <li><a href="spices/">Spices &amp; Red Chilli</a></li>
+            <li><a href="sugar-icumsa-45/">Sugar ICUMSA 45</a></li>
           </ul>
         </li>
-        <li><a href="export-process.html">Export Process &amp; FAQ</a></li>
-        <li><a href="certificates.html">Certificates</a></li>
-        <li><a href="contact.html">Contact</a></li>
+        <li><a href="export-process/">Export Process &amp; FAQ</a></li>
+        <li><a href="certificates/">Certificates</a></li>
+        <li><a href="contact-us/">Contact</a></li>
       </ul>
 
       <div class="drawer__cta">
-        <a class="btn btn--primary" href="contact.html#rfq">Request a Quote</a>
+        <a class="btn btn--primary" href="contact-us/#rfq">Request a Quote</a>
         <a class="btn btn--outline" href="https://wa.me/917985916897" target="_blank" rel="noopener">Chat on WhatsApp</a>
       </div>
 
@@ -200,8 +228,8 @@
         <span class="pill">GST</span>
       </div>
       <div class="btn-row">
-        <a class="btn btn--primary" href="contact.html#rfq">Request a Quotation <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
-        <a class="btn btn--ghost" href="export-process.html">How we ship</a>
+        <a class="btn btn--primary" href="contact-us/#rfq">Request a Quotation <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+        <a class="btn btn--ghost" href="export-process/">How we ship</a>
       </div>
     </div>
     <div class="hero__media">
@@ -244,7 +272,7 @@
         <div class="card__body">
           <h3>Rice</h3>
           <p>Basmati (1121, 1509, 1718, 1885, 1401, Pusa, Traditional) and non-Basmati varieties including Sona Masoori, IR-64 and PR-26.</p>
-          <a class="card__link" href="rice.html">View Indian rice specifications <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+          <a class="card__link" href="rice/">View Indian rice specifications <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
         </div>
       </article>
 
@@ -256,7 +284,7 @@
         <div class="card__body">
           <h3>Coffee</h3>
           <p>Green, roasted and instant coffee in Arabica and Robusta grades — PL, AC, RC and RP — from selected Indian estates.</p>
-          <a class="card__link" href="coffee.html">View Indian coffee specifications <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+          <a class="card__link" href="tea-coffee/">View Indian coffee specifications <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
         </div>
       </article>
 
@@ -268,7 +296,7 @@
         <div class="card__body">
           <h3>Spices</h3>
           <p>Sannam S4 / S334 red chilli with bright colour and balanced heat, plus turmeric, cumin, cloves and cardamom.</p>
-          <a class="card__link" href="spices.html">View Indian spice specifications <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+          <a class="card__link" href="spices/">View Indian spice specifications <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
         </div>
       </article>
 
@@ -280,7 +308,7 @@
         <div class="card__body">
           <h3>Sugar ICUMSA 45</h3>
           <p>Refined white crystal sugar from certified Indian mills, plus ICUMSA 100–150, brown sugar and raw sugar grades.</p>
-          <a class="card__link" href="sugar.html">View Indian sugar specifications <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+          <a class="card__link" href="sugar-icumsa-45/">View Indian sugar specifications <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
         </div>
       </article>
     </div>
@@ -309,7 +337,7 @@
       <div class="tile">
         <span class="tile__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 18a4 4 0 0 0 3.3-1.8L6 15l1.4 1.5a4 4 0 0 0 5.9 0L15 15l1.4 1.5A4 4 0 0 0 22 18"/><path d="M4 15V9l8-4 8 4v6"/><path d="M12 5V2"/></svg></span>
         <h3>Import with complete support</h3>
-        <p>Receive coordinated booking, inspection, export packing and the documents your clearing agent needs. <a href="export-process.html">See our export process</a>.</p>
+        <p>Receive coordinated booking, inspection, export packing and the documents your clearing agent needs. <a href="export-process/">See our export process</a>.</p>
       </div>
     </div>
   </div>
@@ -328,8 +356,8 @@
         <p>Xcellence Exim is a merchant exporter from India supplying a wide range of high-quality agricultural products. We work directly with verified mills, certified processors and trusted farmer groups to ensure consistent quality and reliable supply across every category we handle.</p>
         <p>Our approach is deliberately simple: honest communication, strict quality checks, fair pricing, and close coordination from sourcing through to final shipment. Whether it is rice, sugar, coffee or spices, the commitment stays the same — the right quality, at the right time, with complete transparency.</p>
         <div class="btn-row" style="margin-top:1.6rem">
-          <a class="btn btn--outline" href="about.html">More about us</a>
-          <a class="btn btn--solid" href="certificates.html">View certificates</a>
+          <a class="btn btn--outline" href="about-us/">More about us</a>
+          <a class="btn btn--solid" href="certificates/">View certificates</a>
         </div>
       </div>
     </div>
@@ -373,7 +401,7 @@
           <li>Shipping &amp; logistics coordination</li>
         </ul>
         <div class="btn-row" style="margin-top:1.8rem">
-          <a class="btn btn--solid" href="export-process.html">See the full process</a>
+          <a class="btn btn--solid" href="export-process/">See the full process</a>
         </div>
       </div>
       <div class="split__media">
@@ -391,7 +419,7 @@
         <p>Send us your product, quantity, destination port and preferred Incoterms — you will have a detailed offer from our export desk within one business day.</p>
       </div>
       <div class="btn-row">
-        <a class="btn btn--primary" href="contact.html#rfq">Request a Quote</a>
+        <a class="btn btn--primary" href="contact-us/#rfq">Request a Quote</a>
         <a class="btn btn--ghost" href="https://wa.me/917985916897" target="_blank" rel="noopener">WhatsApp Us</a>
       </div>
     </div>
@@ -418,21 +446,21 @@
     <div>
       <h4>Products</h4>
       <ul>
-        <li><a href="rice.html">Rice — Basmati &amp; Non-Basmati</a></li>
-        <li><a href="coffee.html">Coffee — Arabica &amp; Robusta</a></li>
-        <li><a href="spices.html">Spices &amp; Red Chilli</a></li>
-        <li><a href="sugar.html">Sugar ICUMSA 45</a></li>
+        <li><a href="rice/">Rice — Basmati &amp; Non-Basmati</a></li>
+        <li><a href="tea-coffee/">Coffee — Arabica &amp; Robusta</a></li>
+        <li><a href="spices/">Spices &amp; Red Chilli</a></li>
+        <li><a href="sugar-icumsa-45/">Sugar ICUMSA 45</a></li>
       </ul>
     </div>
 
     <div>
       <h4>Company</h4>
       <ul>
-        <li><a href="about.html">About Us</a></li>
-        <li><a href="export-process.html">Export Process</a></li>
-        <li><a href="export-process.html#faq">Buyer FAQ</a></li>
-        <li><a href="certificates.html">Certificates</a></li>
-        <li><a href="contact.html">Contact</a></li>
+        <li><a href="about-us/">About Us</a></li>
+        <li><a href="export-process/">Export Process</a></li>
+        <li><a href="export-process/#faq">Buyer FAQ</a></li>
+        <li><a href="certificates/">Certificates</a></li>
+        <li><a href="contact-us/">Contact</a></li>
       </ul>
     </div>
 
@@ -453,11 +481,22 @@
 
   <div class="wrap">
     <div class="footer__bottom">
-      <p>&copy; <span data-year>2026</span> Xcellence Exim. All rights reserved.</p>
+      <p>&copy; <span data-year>2026</span> Xcellence Exim. All rights reserved. &middot; <a href="privacy/">Privacy Notice</a></p>
       <p translate="no" class="notranslate">GST No: 08AAAFX5073E1Z6</p>
     </div>
   </div>
 </footer>
+
+<aside class="consent" data-consent-banner hidden aria-label="Analytics privacy choices">
+  <div>
+    <strong>Privacy choices</strong>
+    <p>We use optional Google Analytics cookies to understand website usage. The site works without them. Read our <a href="privacy/">Privacy Notice</a>.</p>
+  </div>
+  <div class="consent__actions">
+    <button type="button" class="btn btn--outline" data-consent="denied">Decline</button>
+    <button type="button" class="btn btn--primary" data-consent="granted">Accept analytics</button>
+  </div>
+</aside>
 
 <a class="wa-float" href="https://wa.me/917985916897" target="_blank" rel="noopener" aria-label="Chat with Xcellence Exim on WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.8-.9-2-1s-.5-.2-.7.1-.8 1-1 1.2-.4.2-.7 0a8.2 8.2 0 0 1-2.4-1.5 9 9 0 0 1-1.7-2.1c-.2-.3 0-.5.1-.6l.5-.6.3-.5v-.5l-1-2.3c-.2-.6-.5-.5-.7-.5h-.6a1.2 1.2 0 0 0-.9.4 3.6 3.6 0 0 0-1.1 2.7 6.3 6.3 0 0 0 1.3 3.3 14.3 14.3 0 0 0 5.5 4.8c.8.3 1.4.5 1.8.7a4.4 4.4 0 0 0 2 .1 3.3 3.3 0 0 0 2.1-1.5 2.6 2.6 0 0 0 .2-1.5c-.1-.1-.3-.2-.6-.3zM12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2zm0 18.3a8.3 8.3 0 0 1-4.2-1.2l-.3-.2-3.1.8.8-3-.2-.3A8.3 8.3 0 1 1 12 20.3z"/></svg></a>
 

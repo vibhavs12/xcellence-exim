@@ -56,6 +56,10 @@ function doPost(e) {
       source: text_(input.source || input._url, 300)
     };
 
+    if (text_(input.privacy_acknowledged, 10).toLowerCase() !== 'yes') {
+      throw new Error('Privacy acknowledgement is required.');
+    }
+
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(enquiry.email)) {
       throw new Error('Please enter a valid email address.');
     }
@@ -79,6 +83,7 @@ function doPost(e) {
       ['Preferred Incoterm', enquiry.incoterm],
       ['Packing preference', enquiry.packing],
       ['Message', enquiry.message],
+      ['Privacy notice acknowledged', 'Yes'],
       ['Submitted from', enquiry.source],
       ['Received', new Date().toISOString()]
     ];

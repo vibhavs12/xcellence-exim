@@ -6,7 +6,8 @@ import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from parts import (head, header, footer, cta_band, pagehead,
                    IMAGES as I, ICON, SITE, WA, EMAIL_SALES, EMAIL_INFO,
-                   EMAIL_DIR, ENQUIRY_ENDPOINT, PHONE)
+                   EMAIL_DIR, ENQUIRY_ENDPOINT, PHONE, PAGE_ROUTES,
+                   PAGE_NAMES, output_path, public_url, route_href)
 
 # Pages are written to the repository root so GitHub Pages can serve
 # them directly (Settings -> Pages -> Deploy from branch: main / root).
@@ -21,21 +22,35 @@ def write(name, html):
     print('  wrote', name, '(%.1f KB)' % (len(html) / 1024.0))
 
 
-def product_schema(name, desc, img, cat):
+def rewrite_internal_links(markup):
+    """Point generated navigation at canonical clean URLs.
+
+    Nested pages include a ../ base element, so these route-relative links
+    resolve correctly on both GitHub Pages and the production domain.
+    """
+    for source in sorted(PAGE_ROUTES, key=len, reverse=True):
+        markup = markup.replace(f'href="{source}', f'href="{route_href(source)}')
+    return markup
+
+
+def write_page(source_name, markup):
+    write(output_path(source_name), rewrite_internal_links(markup))
+
+
+def export_service_schema(name, desc, img, cat):
     data = {
         "@context": "https://schema.org",
-        "@type": "Product",
+        "@type": "Service",
         "name": html_lib.unescape(name),
+        "serviceType": f"{cat} sourcing and export",
         "description": html_lib.unescape(desc),
         "image": img,
-        "category": cat,
-        "brand": {"@type": "Brand", "name": "Xcellence Exim"},
-        "countryOfOrigin": {"@type": "Country", "name": "India"},
+        "provider": {"@id": f"{SITE}/#organization"},
+        "areaServed": "Worldwide",
         "audience": {
             "@type": "BusinessAudience",
             "audienceType": "Importers, distributors, wholesalers and food manufacturers",
         },
-        "seller": {"@id": f"{SITE}/#organization"},
     }
     return ('<script type="application/ld+json">\n' +
             json.dumps(data, ensure_ascii=False, indent=2) +
@@ -49,7 +64,7 @@ home = head(
     "Indian Agro Exporter &amp; Supplier | Rice, Coffee, Spices &amp; Sugar",
     "Indian agricultural exporter supplying Basmati rice, non-Basmati rice, Arabica and Robusta coffee, spices, Sannam S4 chilli and ICUMSA 45 sugar to global importers.",
     "index.html",
-    og_image=I['home_rice'],
+    og_image=I['rice1'],
 )
 home += header("index.html")
 
@@ -253,7 +268,7 @@ home += f"""
 """
 home += cta_band()
 home += footer()
-write('index.html', home)
+write_page('index.html', home)
 
 
 # =========================================================================
@@ -262,7 +277,7 @@ write('index.html', home)
 about = head(
     "Indian Agricultural Export Company | About Xcellence Exim",
     "Meet Xcellence Exim, an Indian agricultural export company sourcing rice, coffee, spices and sugar through verified mills, processors and farmer partners.",
-    "about.html", og_image=I['about'])
+    "about.html", og_image=I['hero2'])
 about += header("about.html")
 about += pagehead(
     "Indian Agricultural Export Company",
@@ -393,7 +408,7 @@ about += f"""
 """
 about += cta_band()
 about += footer()
-write('about.html', about)
+write_page('about.html', about)
 
 
 # =========================================================================
@@ -443,7 +458,7 @@ def product_page(fname, title, meta_desc, crumb, h1, lead, eyebrow,
 """
     html += cta_band()
     html += footer()
-    write(fname, html)
+    write_page(fname, html)
 
 
 def table(caption, headers, rows):
@@ -495,7 +510,7 @@ product_page(
      (I['rice2'], "Sorted premium rice ready for packing"),
      (I['rice3'], "Export packaging for Indian rice")],
     [("HS category", "Cereals — Rice"), ("Bag sizes", "25 kg / 50 kg / custom"), ("Private label", "Available")],
-    product_schema("Premium Indian Rice — Basmati &amp; Non-Basmati",
+    export_service_schema("Premium Indian Rice — Basmati &amp; Non-Basmati",
                    "Export-grade Indian Basmati and non-Basmati rice, cleaned, sorted, lab-tested and packed to buyer specification.",
                    I['rice2'], "Rice"),
     "100630",
@@ -557,7 +572,7 @@ product_page(
      (I['cof2'], "Roasted Indian coffee beans"),
      (I['cof3'], "Packaged Indian coffee ready for shipment")],
     [("Origins", "Selected Indian estates"), ("Species", "Arabica &amp; Robusta"), ("Private label", "Available")],
-    product_schema("Indian Coffee — Arabica &amp; Robusta",
+    export_service_schema("Indian Coffee — Arabica &amp; Robusta",
                    "Green, roasted and instant Indian coffee in PL, AC, RC and RP grades, processed and export-packed to buyer requirement.",
                    I['cof3'], "Coffee"),
     "090111 &middot; 09012190 &middot; 21011110",
@@ -597,7 +612,7 @@ product_page(
      (I['spi2'], "Indian spices sorted for export"),
      (I['spi3'], "Packed Indian spices ready for shipment")],
     [("Lead variety", "Sannam S4 / S334"), ("Processing", "Cleaned / Sortex / Stemless"), ("Bulk", "Jumbo bags available")],
-    product_schema("Sannam S4 Red Chilli &amp; Indian Spices",
+    export_service_schema("Sannam S4 Red Chilli &amp; Indian Spices",
                    "Export-grade Sannam S4 red chilli with bright red colour and medium heat, plus turmeric, cumin, cloves and cardamom.",
                    I['spi3'], "Spices"),
     "090421",
@@ -639,7 +654,7 @@ product_page(
      (I['sug2'], "Sugar packed for export"),
      (I['sug3'], "Certified Indian mill sugar in bulk packing")],
     [("Lead grade", "ICUMSA 45"), ("Bulk packing", "1 MT jumbo bags"), ("Source", "Certified Indian mills")],
-    product_schema("Sugar ICUMSA 45",
+    export_service_schema("Sugar ICUMSA 45",
                    "Refined white crystal sugar from certified Indian mills, plus ICUMSA 100–150, brown sugar and raw sugar grades.",
                    I['sug2'], "Sugar"),
     "17019990",
@@ -749,7 +764,7 @@ proc += f"""
 proc += cta_band("Still have a question?",
                  "Our export desk answers enquiries within one business day — including specification queries, sampling requests and documentation questions.")
 proc += footer()
-write('export-process.html', proc)
+write_page('export-process.html', proc)
 
 
 # =========================================================================
@@ -808,10 +823,10 @@ certs += footer()
 certs = certs.replace('</body>', f'''
 <div class="lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Certificate viewer">
   <button type="button" class="lightbox__close" aria-label="Close certificate viewer">{ICON['close']}</button>
-  <img src="" alt="">
+  <img alt="Expanded certificate preview">
 </div>
 </body>''')
-write('certificates.html', certs)
+write_page('certificates.html', certs)
 
 
 # =========================================================================
@@ -917,6 +932,13 @@ contact += f"""
                 <textarea id="f-msg" name="message" required placeholder="Specification, grade, target price, delivery window, or any certification you need."></textarea>
                 <span class="err"></span>
               </div>
+              <div class="field field--full field--consent">
+                <label for="f-privacy">
+                  <input type="checkbox" id="f-privacy" name="privacy_acknowledged" value="yes" required>
+                  <span>I have read the <a href="privacy.html">Privacy Notice</a> and agree that Xcellence Exim may use my details to respond to this enquiry. <span class="req" aria-hidden="true">*</span></span>
+                </label>
+                <span class="err"></span>
+              </div>
             </div>
 
             <div class="hp" aria-hidden="true">
@@ -928,7 +950,7 @@ contact += f"""
               <button type="submit" class="btn btn--primary">Send enquiry {ICON['arrow']}</button>
               <button type="button" class="btn btn--outline" id="rfq-whatsapp">Send via WhatsApp</button>
             </div>
-            <p class="form-note">We use your details only to prepare and follow up on this quotation. No marketing lists, no sharing with third parties.</p>
+            <p class="form-note">We use your details to prepare and follow up on this quotation. Form delivery is processed through the company's Google Workspace account; see the Privacy Notice for details.</p>
             <div class="form-status" id="form-status" role="status" aria-live="polite"></div>
           </form>
         </div>
@@ -977,24 +999,74 @@ contact += f"""
 </section>
 """
 contact += footer()
-write('contact.html', contact)
+write_page('contact.html', contact)
+
+
+# =========================================================================
+# PRIVACY NOTICE
+# =========================================================================
+privacy = head(
+    "Privacy Notice | Xcellence Exim",
+    "Learn how Xcellence Exim collects, uses, stores and protects information submitted through its agricultural export quotation website.",
+    "privacy.html", og_image=I['hero1'])
+privacy += header("privacy.html")
+privacy += pagehead(
+    "Privacy Notice",
+    "How Xcellence Exim handles website analytics, quotation enquiries and the personal information you choose to send us.",
+    "Privacy")
+privacy += f"""
+<section class="section">
+  <div class="wrap wrap--narrow prose">
+    <p><strong>Last updated:</strong> 28 August 2026</p>
+    <p>Xcellence Exim, based in Kota, Rajasthan, India, is responsible for information collected through this website. Questions about this notice or your information can be sent to <a href="mailto:{EMAIL_SALES}">{EMAIL_SALES}</a>.</p>
+
+    <h2>Information we collect</h2>
+    <p>When you request a quotation, we collect the details you enter, which may include your name, company, email address, phone or WhatsApp number, destination country and port, product requirements, quantity, packing preference, Incoterms and message. We also receive the page address from which the enquiry was submitted.</p>
+
+    <h2>How we use enquiry information</h2>
+    <p>We use this information to review your requirements, prepare and follow up on quotations, answer questions, coordinate samples or orders, prevent misuse of the form, and retain appropriate business correspondence. We do not sell personal information or add quotation contacts to unrelated marketing lists.</p>
+
+    <h2>Service providers and international processing</h2>
+    <p>The quotation form is delivered through Google Apps Script and Google Workspace. If you choose a machine translation, GTranslate and Google Translate process the page needed to provide that translation. If you accept optional analytics cookies, Google Analytics processes usage information such as pages viewed, approximate location, device and referral data. These providers may process information outside your country under their own privacy and security terms.</p>
+
+    <h2>Analytics and cookies</h2>
+    <p>Google Analytics is disabled until you select “Accept analytics.” If you decline, the website remains fully usable. Your choice is stored in your browser. The language tool may set its own cookie after you request a translation so it can preserve your chosen language.</p>
+
+    <h2>Retention and security</h2>
+    <p>We retain quotation and trade correspondence only for as long as reasonably needed for the enquiry, a resulting commercial relationship, legal obligations, dispute prevention and record keeping. We use reasonable administrative and technical measures, but no internet transmission or storage system can be guaranteed completely secure.</p>
+
+    <h2>Your choices</h2>
+    <p>You may ask us to provide, correct or delete personal information associated with an enquiry, subject to legal and business-record obligations. You may also change analytics consent by clearing this site's browser storage and reloading the page.</p>
+
+    <h2>External communications</h2>
+    <p>Phone, email, WhatsApp and social-media links take you to services operated by other companies. Information you send through those services is also governed by their policies.</p>
+
+    <h2>Changes to this notice</h2>
+    <p>We may update this notice when our website, providers or legal obligations change. The current version and its update date will remain available on this page.</p>
+  </div>
+</section>
+"""
+privacy += footer()
+write_page('privacy.html', privacy)
 
 
 # =========================================================================
 # sitemap / robots
 # =========================================================================
-pages = ["", "about.html", "rice.html", "coffee.html", "spices.html",
-         "sugar.html", "export-process.html", "certificates.html", "contact.html"]
+pages = ["index.html", "about.html", "rice.html", "coffee.html", "spices.html",
+         "sugar.html", "export-process.html", "certificates.html", "contact.html",
+         "privacy.html"]
 page_images = {
-    "": (I["home_rice"], "Indian Basmati rice exporter and supplier"),
-    "about.html": (I["about"], "Xcellence Exim Indian agricultural export company"),
+    "index.html": (I["rice1"], "Indian Basmati rice exporter and supplier"),
+    "about.html": (I["hero2"], "Xcellence Exim Indian agricultural export company"),
     "rice.html": (I["rice1"], "Indian Basmati and non-Basmati rice for export"),
     "coffee.html": (I["cof1"], "Indian Arabica and Robusta coffee for export"),
     "spices.html": (I["spi1"], "Indian Sannam S4 red chilli and spices for export"),
     "sugar.html": (I["sug1"], "Indian refined sugar ICUMSA 45 for export"),
-    "export-process.html": (I["order_process"], "Indian agricultural export order process"),
+    "export-process.html": (I["hero3"], "Indian agricultural export order process"),
     "certificates.html": (I["cert1"], "Xcellence Exim Indian export registrations"),
-    "contact.html": (I["home_logistics"], "Request an Indian agricultural export quotation"),
+    "contact.html": (I["hero1"], "Request an Indian agricultural export quotation"),
+    "privacy.html": (I["hero1"], "Xcellence Exim privacy notice"),
 }
 lastmod = "2026-08-28"
 sm = ('<?xml version="1.0" encoding="UTF-8"?>\n'
@@ -1004,37 +1076,28 @@ for p in pages:
     image_url, image_title = page_images[p]
     if not image_url.startswith(("http://", "https://")):
         image_url = SITE + "/" + image_url.lstrip("/")
-    sm += (f"  <url><loc>{SITE}/{p}</loc><lastmod>{lastmod}</lastmod>"
+    sm += (f"  <url><loc>{public_url(p)}</loc><lastmod>{lastmod}</lastmod>"
            f"<image:image><image:loc>{image_url}</image:loc>"
            f"<image:title>{image_title}</image:title></image:image></url>\n")
 sm += "</urlset>\n"
 write('sitemap.xml', sm)
 write('robots.txt', f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n")
 
-# Preserve the existing WordPress URLs during migration. GitHub Pages cannot
-# emit server-side 301 responses, so these zero-delay meta refresh pages are
-# the permanent-redirect fallback recommended when HTTP redirects are not
-# available. Keep the matching server-side redirects on production if the host
-# supports them.
-legacy_urls = {
-    "about-us/index.html": "about.html",
-    "contact-us/index.html": "contact.html",
-    "rice/index.html": "rice.html",
-    "tea-coffee/index.html": "coffee.html",
-    "spices/index.html": "spices.html",
-    "certificates/index.html": "certificates.html",
-    "sugar-icumsa-45/index.html": "sugar.html",
-}
-for legacy_path, target in legacy_urls.items():
-    label = target.replace('.html', '').replace('-', ' ').title()
-    destination = f"../{target}"
-    write(legacy_path, f'''<!doctype html>
+# The old WordPress paths above are now the canonical content locations. Keep
+# the former redesign's .html URLs as noindex redirect fallbacks so bookmarks
+# and preview links continue to work. Production Apache also sends real 301s.
+for source in pages:
+    if source == "index.html":
+        continue
+    label = PAGE_NAMES[source]
+    destination = route_href(source)
+    write(source, f'''<!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{label} — Xcellence Exim</title>
-<link rel="canonical" href="{SITE}/{target}">
-<meta name="robots" content="index, follow">
+<link rel="canonical" href="{public_url(source)}">
+<meta name="robots" content="noindex, follow">
 <meta http-equiv="refresh" content="0; url={destination}">
 </head><body>
 <p>This page has moved to <a href="{destination}">{label}</a>.</p>

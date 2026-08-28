@@ -1065,6 +1065,13 @@ td strong { color: var(--green-800); font-weight: 600; }
 }
 .field input::placeholder, .field textarea::placeholder { color: var(--ink-400); }
 
+.field--consent label { display: flex; align-items: flex-start; gap: .7rem; font-weight: 500; line-height: 1.55; }
+.field--consent input[type="checkbox"] {
+  width: 1.15rem; height: 1.15rem; min-height: 0; padding: 0; margin-top: .18rem;
+  accent-color: var(--green-700); flex: 0 0 auto;
+}
+.field--consent a { text-decoration: underline; }
+
 .field.is-invalid input, .field.is-invalid select, .field.is-invalid textarea { border-color: #C0392B; }
 .field .err { font-size: var(--fs-xs); color: #C0392B; display: none; }
 .field.is-invalid .err { display: block; }
@@ -1161,8 +1168,31 @@ td strong { color: var(--green-800); font-weight: 600; }
   font-size: var(--fs-xs); color: #7E948A;
 }
 .footer__bottom p { margin: 0; }
+.footer__bottom a { color: inherit; text-decoration: underline; text-underline-offset: .18em; }
 
-/* ---------- 19. WhatsApp float ---------- */
+/* ---------- 19. Privacy / analytics consent ---------- */
+.prose h2 { margin-top: 2.1rem; margin-bottom: .65rem; color: var(--green-800); }
+.prose p { max-width: 76ch; }
+
+.consent {
+  position: fixed; z-index: 120; inset-inline: 1rem; inset-block-end: 1rem;
+  max-width: 920px; margin-inline: auto; padding: 1rem 1.1rem;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  background: #fff; color: var(--ink-900); border: 1px solid var(--line);
+  border-radius: var(--radius-md); box-shadow: var(--shadow-lg);
+}
+.consent[hidden] { display: none; }
+.consent strong { color: var(--green-800); }
+.consent p { margin: .25rem 0 0; font-size: var(--fs-sm); max-width: 65ch; }
+.consent p a { text-decoration: underline; }
+.consent__actions { display: flex; flex: 0 0 auto; gap: .65rem; }
+.consent__actions .btn { white-space: nowrap; }
+@media (max-width: 700px) {
+  .consent { align-items: stretch; flex-direction: column; }
+  .consent__actions { display: grid; grid-template-columns: 1fr 1fr; }
+}
+
+/* ---------- 20. WhatsApp float ---------- */
 .wa-float {
   position: fixed; z-index: 90;
   inset-block-end: clamp(1rem, 3vw, 1.75rem);
@@ -1177,12 +1207,12 @@ td strong { color: var(--green-800); font-weight: 600; }
 .wa-float svg { width: 29px; height: 29px; }
 @media (max-width: 480px) { .wa-float { width: 52px; height: 52px; } .wa-float svg { width: 26px; height: 26px; } }
 
-/* ---------- 20. Reveal on scroll ---------- */
+/* ---------- 21. Reveal on scroll ---------- */
 .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s var(--ease), transform .6s var(--ease); }
 .reveal.is-in { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } }
 
-/* ---------- 21. RTL fine-tuning ---------- */
+/* ---------- 22. RTL fine-tuning ---------- */
 [dir="rtl"] body { font-family: "Noto Sans Arabic", "Segoe UI", Tahoma, var(--font-body); }
 [dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3, [dir="rtl"] h4 { font-family: "Noto Sans Arabic", "Segoe UI", Tahoma, var(--font-display); letter-spacing: 0; }
 [dir="rtl"] .eyebrow, [dir="rtl"] .footer h4, [dir="rtl"] thead th, [dir="rtl"] .trust__label { letter-spacing: 0; }

@@ -1,10 +1,13 @@
 RewriteEngine On
 
-# Permanent redirects from the former WordPress URL structure.
-Redirect 301 /about-us/ /about.html
-Redirect 301 /contact-us/ /contact.html
-Redirect 301 /rice/ /rice.html
-Redirect 301 /tea-coffee/ /coffee.html
-Redirect 301 /spices/ /spices.html
-Redirect 301 /certificates/ /certificates.html
-Redirect 301 /sugar-icumsa-45/ /sugar.html
+# Clean WordPress-era URLs remain canonical. Redirect only the temporary
+# redesign preview's .html URLs to those stable paths.
+Redirect 301 /about.html /about-us/
+Redirect 301 /contact.html /contact-us/
+Redirect 301 /rice.html /rice/
+Redirect 301 /coffee.html /tea-coffee/
+Redirect 301 /spices.html /spices/
+Redirect 301 /certificates.html /certificates/
+Redirect 301 /sugar.html /sugar-icumsa-45/
+Redirect 301 /export-process.html /export-process/
+Redirect 301 /privacy.html /privacy/

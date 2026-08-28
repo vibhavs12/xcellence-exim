@@ -10,6 +10,36 @@
   var $$ = function (s, c) { return Array.prototype.slice.call((c || doc).querySelectorAll(s)); };
 
   /* ----------------------------------------------------------------------
+     Optional analytics consent
+     ---------------------------------------------------------------------- */
+  var consentBanner = $('[data-consent-banner]');
+  var consentChoice = null;
+  try { consentChoice = localStorage.getItem('xe-analytics-consent'); } catch (e) { /* blocked storage */ }
+  if (consentBanner && window.XE_IS_PRODUCTION && !consentChoice) consentBanner.hidden = false;
+
+  $$('[data-consent]', consentBanner || doc).forEach(function (button) {
+    button.addEventListener('click', function () {
+      var choice = button.getAttribute('data-consent') === 'granted' ? 'granted' : 'denied';
+      try { localStorage.setItem('xe-analytics-consent', choice); } catch (e) { /* blocked storage */ }
+      if (consentBanner) consentBanner.hidden = true;
+      if (choice === 'granted' && typeof window.xeLoadAnalytics === 'function') window.xeLoadAnalytics();
+    });
+  });
+
+  function track(name, parameters) {
+    if (typeof window.gtag === 'function') window.gtag('event', name, parameters || {});
+  }
+
+  $$('a[href^="tel:"], a[href^="mailto:"], a[href*="wa.me"]').forEach(function (link) {
+    link.addEventListener('click', function () {
+      var href = link.getAttribute('href') || '';
+      var method = href.indexOf('tel:') === 0 ? 'phone' :
+        (href.indexOf('mailto:') === 0 ? 'email' : 'whatsapp');
+      track('contact', { method: method, link_url: href });
+    });
+  });
+
+  /* ----------------------------------------------------------------------
      0. Protect literals from machine translation
 
      Google Translate happily translates the words inside an email address —
@@ -723,7 +753,7 @@
       $$('[required]', form).forEach(function (f) {
         clearError(f);
         var v = (f.value || '').trim();
-        if (!v) {
+        if ((f.type === 'checkbox' && !f.checked) || (!v && f.type !== 'checkbox')) {
           setError(f, 'This field is required.');
           ok = false; firstBad = firstBad || f;
         } else if (f.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) {
@@ -803,6 +833,7 @@
 
       var payload = answers();
       payload.source = window.location.href;
+      payload.privacy_acknowledged = val('privacy_acknowledged');
       var body = new URLSearchParams();
       Object.keys(payload).forEach(function (key) { body.append(key, payload[key]); });
 
@@ -813,6 +844,7 @@
         body: body
       }).then(function () {
         form.reset();
+        track('generate_lead', { method: 'rfq_form', product: payload.Product || '' });
         show('ok', 'Thank you — your enquiry is on its way to our export desk. ' +
                    'We reply within one business day, usually sooner.');
       }).catch(function () {
@@ -827,6 +859,7 @@
       waBtn.addEventListener('click', function () {
         if (!validate()) { show('err', 'Please complete the highlighted fields first.'); return; }
         var text = 'Export enquiry — Xcellence Exim\n\n' + asText();
+        track('generate_lead', { method: 'whatsapp_rfq', product: val('product') });
         window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(text), '_blank', 'noopener');
       });
     }

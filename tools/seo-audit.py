@@ -10,10 +10,23 @@ from urllib.parse import urlsplit
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGES = [
-    "index.html", "about.html", "rice.html", "coffee.html", "spices.html",
-    "sugar.html", "export-process.html", "certificates.html", "contact.html",
-]
+ROUTES = {
+    "index.html": "",
+    "about.html": "about-us/",
+    "rice.html": "rice/",
+    "coffee.html": "tea-coffee/",
+    "spices.html": "spices/",
+    "sugar.html": "sugar-icumsa-45/",
+    "export-process.html": "export-process/",
+    "certificates.html": "certificates/",
+    "contact.html": "contact-us/",
+    "privacy.html": "privacy/",
+}
+
+
+def output_path(source):
+    route = ROUTES[source]
+    return Path("index.html" if not route else route + "index.html")
 
 
 class PageParser(HTMLParser):
@@ -77,7 +90,7 @@ def parse_page(path):
 
 def main():
     errors = []
-    parsed = {name: parse_page(ROOT / name) for name in PAGES}
+    parsed = {name: parse_page(ROOT / output_path(name)) for name in ROUTES}
     titles = {}
     descriptions = {}
 
@@ -108,25 +121,33 @@ def main():
             except json.JSONDecodeError as exc:
                 errors.append(f"{name}: invalid JSON-LD: {exc}")
 
+    route_sources = {route: source for source, route in ROUTES.items()}
     for name, page in parsed.items():
         for href in page.links:
             parts = urlsplit(href)
             if parts.scheme or parts.netloc or href.startswith(("#", "mailto:", "tel:")):
                 continue
-            target_name = parts.path or name
-            target = (ROOT / target_name).resolve()
-            if not target.exists():
+            route = parts.path
+            if route in ("", "./"):
+                target_name = "index.html"
+            else:
+                target_name = route_sources.get(route)
+            if target_name is None:
                 errors.append(f"{name}: broken internal link {href}")
                 continue
-            if parts.fragment and target_name in parsed and parts.fragment not in parsed[target_name].ids:
+            if parts.fragment and parts.fragment not in parsed[target_name].ids:
                 errors.append(f"{name}: missing fragment target {href}")
 
     try:
         tree = ET.parse(ROOT / "sitemap.xml")
         ns = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
         locations = tree.findall(".//sm:loc", ns)
-        if len(locations) != len(PAGES):
-            errors.append(f"sitemap.xml: expected {len(PAGES)} URLs, found {len(locations)}")
+        if len(locations) != len(ROUTES):
+            errors.append(f"sitemap.xml: expected {len(ROUTES)} URLs, found {len(locations)}")
+        expected = {"https://xcellenceexim.com/" + route for route in ROUTES.values()}
+        actual = {node.text for node in locations}
+        if actual != expected:
+            errors.append("sitemap.xml: canonical clean URL set does not match generated pages")
     except ET.ParseError as exc:
         errors.append(f"sitemap.xml: invalid XML: {exc}")
 
@@ -136,7 +157,23 @@ def main():
             print(" -", error)
         return 1
 
-    print(f"SEO audit passed for {len(PAGES)} indexable pages.")
+    for source, route in ROUTES.items():
+        if source == "index.html":
+            continue
+        redirect = parse_page(ROOT / source)
+        if "noindex" not in redirect.robots:
+            errors.append(f"{source}: redirect fallback must be noindex")
+        expected_canonical = "https://xcellenceexim.com/" + route
+        if redirect.canonical != expected_canonical:
+            errors.append(f"{source}: redirect canonical should be {expected_canonical}")
+
+    if errors:
+        print("SEO audit failed:")
+        for error in errors:
+            print(" -", error)
+        return 1
+
+    print(f"SEO audit passed for {len(ROUTES)} indexable clean-URL pages.")
     return 0
 
 
