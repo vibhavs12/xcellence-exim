@@ -360,7 +360,7 @@ about += f"""
         </ul>
       </div>
       <div class="split__media">
-        <img src="{I['hero2']}" alt="Quality inspection of export commodities" width="800" height="600" loading="lazy">
+        <img src="{I['home_logistics']}" alt="Quality inspection and export documentation" width="800" height="600" loading="lazy">
       </div>
     </div>
   </div>
