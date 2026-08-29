@@ -239,7 +239,7 @@ def head(title, desc, page, extra_schema="", og_image=None):
 /* Keep the GitHub Pages preview out of search and load analytics only after
    consent on the production domain. Canonicals always point to production. */
 (function () {{
-  var preview = /\\.github\\.io$/i.test(location.hostname);
+  var preview = /\\.(github\\.io|pages\\.dev)$/i.test(location.hostname);
   if (preview) {{
     var robots = document.querySelector('meta[name="robots"]');
     if (robots) robots.content = 'noindex, nofollow';
@@ -326,7 +326,7 @@ def header(active):
   <div class="wrap topbar__inner">
     <div class="topbar__contact">
       <span translate="no" class="notranslate">{ICON['phone']}<a href="tel:+917985916897">{PHONE}</a></span>
-      <span translate="no" class="notranslate">{ICON['mail']}<a href="mailto:{EMAIL_SALES}">{EMAIL_SALES}</a></span>
+      <span translate="no" class="notranslate">{ICON['mail']}<a href="mailto:{EMAIL_INFO}">{EMAIL_INFO}</a></span>
     </div>
     <div class="topbar__right">
       <span class="topbar__social">
@@ -395,7 +395,7 @@ def header(active):
 
       <div class="drawer__meta" translate="no">
         <a href="tel:+917985916897">{PHONE}</a>
-        <a href="mailto:{EMAIL_SALES}">{EMAIL_SALES}</a>
+        <a href="mailto:{EMAIL_INFO}">{EMAIL_INFO}</a>
       </div>
     </div>
   </div>
