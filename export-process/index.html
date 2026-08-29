@@ -96,7 +96,7 @@
 /* Keep the GitHub Pages preview out of search and load analytics only after
    consent on the production domain. Canonicals always point to production. */
 (function () {
-  var preview = /\.github\.io$/i.test(location.hostname);
+  var preview = /\.(github\.io|pages\.dev)$/i.test(location.hostname);
   if (preview) {
     var robots = document.querySelector('meta[name="robots"]');
     if (robots) robots.content = 'noindex, nofollow';
