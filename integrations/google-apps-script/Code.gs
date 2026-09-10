@@ -23,7 +23,10 @@ var CONFIG = Object.freeze({
     'Sugar — Other grade',
     'Other agro commodity'
   ],
-  maxPerHour: 30
+  maxPerHour: 30,
+  turnstileVerifyUrl: 'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+  turnstileAction: 'rfq_form',
+  allowedTurnstileHostnames: ['xcellenceexim.com', 'www.xcellenceexim.com']
 });
 
 function doGet() {
@@ -39,6 +42,7 @@ function doPost(e) {
       return json_({ ok: true });
     }
 
+    verifyTurnstile_(input['cf-turnstile-response']);
     enforceRateLimit_();
 
     var enquiry = {
@@ -102,6 +106,47 @@ function doPost(e) {
   } catch (error) {
     console.error(error);
     return json_({ ok: false, message: String(error && error.message || error) });
+  }
+}
+
+function verifyTurnstile_(token) {
+  var responseToken = text_(token, 2048);
+  if (!responseToken) {
+    throw new Error('Verification is required. Please retry.');
+  }
+
+  var secret = PropertiesService.getScriptProperties().getProperty('TURNSTILE_SECRET');
+  if (!secret) {
+    console.error('TURNSTILE_SECRET is not configured.');
+    throw new Error('The enquiry service is temporarily unavailable. Please use WhatsApp.');
+  }
+
+  var response;
+  try {
+    response = UrlFetchApp.fetch(CONFIG.turnstileVerifyUrl, {
+      method: 'post',
+      payload: { secret: secret, response: responseToken },
+      muteHttpExceptions: true
+    });
+  } catch (error) {
+    console.error('Turnstile request failed: ' + error);
+    throw new Error('Verification is temporarily unavailable. Please retry or use WhatsApp.');
+  }
+
+  var result;
+  try {
+    result = JSON.parse(response.getContentText());
+  } catch (error) {
+    console.error('Turnstile returned an invalid response: ' + error);
+    throw new Error('Verification is temporarily unavailable. Please retry or use WhatsApp.');
+  }
+
+  var hostname = text_(result && result.hostname, 255).toLowerCase();
+  if (!result || result.success !== true ||
+      result.action !== CONFIG.turnstileAction ||
+      CONFIG.allowedTurnstileHostnames.indexOf(hostname) === -1) {
+    console.error('Turnstile verification failed: ' + JSON.stringify(result && result['error-codes'] || []));
+    throw new Error('Verification failed. Please retry.');
   }
 }
 

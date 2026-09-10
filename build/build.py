@@ -6,7 +6,7 @@ import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from parts import (head, header, footer, cta_band, pagehead,
                    IMAGES as I, ICON, SITE, WA, EMAIL_SALES, EMAIL_INFO,
-                   EMAIL_DIR, ENQUIRY_ENDPOINT, PHONE, PAGE_ROUTES,
+                   EMAIL_DIR, ENQUIRY_ENDPOINT, TURNSTILE_SITE_KEY, PHONE, PAGE_ROUTES,
                    PAGE_NAMES, output_path, public_url, route_href)
 
 # Pages are written to the repository root so GitHub Pages can serve
@@ -842,6 +842,15 @@ contact += pagehead(
     "Tell us the Indian product, grade, quantity, destination port, packing and Incoterms required for a detailed export offer within one business day.",
     "Contact")
 
+turnstile_markup = (
+    f'''<div class="turnstile-field">
+                <div class="cf-turnstile" data-sitekey="{html_lib.escape(TURNSTILE_SITE_KEY, quote=True)}" data-action="rfq_form" data-theme="light"></div>
+              </div>
+              <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>'''
+    if TURNSTILE_SITE_KEY else
+    '''<p class="turnstile-unavailable">Enquiry verification is being configured. Please use WhatsApp to contact us.</p>'''
+)
+
 contact += f"""
 <section class="section">
   <div class="wrap">
@@ -940,6 +949,8 @@ contact += f"""
                 <span class="err"></span>
               </div>
             </div>
+
+            {turnstile_markup}
 
             <div class="hp" aria-hidden="true">
               <label for="f-hp">Leave this field empty</label>

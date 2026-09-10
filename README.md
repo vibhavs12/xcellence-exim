@@ -95,6 +95,16 @@ The form requires acknowledgement of the site Privacy Notice. Update and
 redeploy `integrations/google-apps-script/Code.gs` so the server-side endpoint
 enforces the same requirement.
 
+### Spam protection
+
+The RFQ endpoint is protected by Cloudflare Turnstile. The public widget key
+must be supplied only while generating the site with `TURNSTILE_SITE_KEY`; its
+matching secret belongs only in the Apps Script project's `TURNSTILE_SECRET`
+Script Property. See
+[`integrations/google-apps-script/README.md`](integrations/google-apps-script/README.md)
+for the required Cloudflare and Apps Script deployment steps. Do not deploy the
+new Apps Script code without the secret, and never commit the secret.
+
 ## Analytics and preview indexing
 
 GA4 property `G-XFVMBYF6P9` loads only on `xcellenceexim.com` and only after the

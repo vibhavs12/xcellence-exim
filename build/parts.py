@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """Shared chrome (head, header, drawer, footer) for the Xcellence Exim site."""
 
+import os
+
 SITE = "https://xcellenceexim.com"
 GA4_ID = "G-XFVMBYF6P9"
 PHONE = "+91 79859 16897"
@@ -8,7 +10,11 @@ WA = "917985916897"
 EMAIL_SALES = "sales@xcellenceexim.com"
 EMAIL_INFO = "info@xcellenceexim.com"
 EMAIL_DIR = "ashwani@xcellenceexim.com"
-ENQUIRY_ENDPOINT = "https://script.google.com/macros/s/AKfycbzaIttnTKeeHGlPzfkkl4dVBslXxUuc9k5ZCYf1t_U5cfGaTYDjogVXyJqFi23_q3zXSA/exec"
+ENQUIRY_ENDPOINT = "https://script.google.com/macros/s/AKfycbzZsZ_2yddBoiygLa6Oj9AVXxQkR5Kw_Os_t9j2U-FyYAKN0EcBz74Tk_aFwKMk25Qc/exec"
+# This is a public identifier, not a secret. The matching secret stays only in
+# Apps Script Script Properties. An environment value can override this during
+# local test builds.
+TURNSTILE_SITE_KEY = os.environ.get("TURNSTILE_SITE_KEY", "0x4AAAAAAEvLhN3JUkh3ol1H").strip()
 FB = "https://www.facebook.com/profile.php?id=61578054179792"
 IG = "https://www.instagram.com/xcellence_exim"
 LI = "https://www.linkedin.com/company/xcellence-exim/"

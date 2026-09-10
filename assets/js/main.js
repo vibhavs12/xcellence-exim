@@ -727,6 +727,18 @@
     var status = $('#form-status');
     var WA_NUMBER = (form.getAttribute('data-whatsapp') || '917985916897').replace(/\D/g, '');
     var ENDPOINT = form.getAttribute('data-endpoint') || form.action;
+    var turnstileBox = $('.cf-turnstile', form);
+
+    var resetTurnstile = function () {
+      if (window.turnstile && typeof window.turnstile.reset === 'function') {
+        try { window.turnstile.reset(); } catch (e) { /* a new challenge will load automatically */ }
+      }
+    };
+
+    var turnstileToken = function () {
+      var field = $('input[name="cf-turnstile-response"]', form);
+      return field ? String(field.value || '').trim() : '';
+    };
 
     var setError = function (field, msg) {
       var wrap = field.closest('.field');
@@ -830,10 +842,16 @@
         show('err', 'Please correct the highlighted fields and try again.');
         return;
       }
+      if (!turnstileBox || !turnstileToken()) {
+        show('err', 'Please complete the security check before sending your enquiry.');
+        resetTurnstile();
+        return;
+      }
 
       var payload = answers();
       payload.source = window.location.href;
       payload.privacy_acknowledged = val('privacy_acknowledged');
+      payload['cf-turnstile-response'] = turnstileToken();
       var body = new URLSearchParams();
       Object.keys(payload).forEach(function (key) { body.append(key, payload[key]); });
 
@@ -850,6 +868,7 @@
       }).catch(function () {
         show('err', 'We could not send your enquiry right now. Please try again or use the WhatsApp button below.');
       }).then(function () {
+        resetTurnstile();
         busy(false);
       });
     });

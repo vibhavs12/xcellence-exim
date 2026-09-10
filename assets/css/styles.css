@@ -1078,6 +1078,8 @@ td strong { color: var(--green-800); font-weight: 600; }
 
 .form-actions { margin-top: 1.6rem; display: flex; flex-wrap: wrap; gap: .8rem; align-items: center; }
 .form-note { font-size: var(--fs-xs); color: var(--ink-400); margin-top: 1rem; }
+.turnstile-field { margin-top: 1.25rem; }
+.turnstile-unavailable { margin-top: 1.25rem; color: #A33025; font-size: var(--fs-sm); font-weight: 600; }
 
 .form-status {
   display: none; margin-top: 1.2rem; padding: .95rem 1.15rem;
