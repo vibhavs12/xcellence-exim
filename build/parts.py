@@ -178,6 +178,7 @@ def head(title, desc, page, extra_schema="", og_image=None):
 <html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8">
+<meta name="google-site-verification" content="Tl39__x2tciJ6o3JTKR80dJf2t0ByfmGNEJNZSNUpbU">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 {base}<title>{title}</title>
 <meta name="description" content="{desc}">
