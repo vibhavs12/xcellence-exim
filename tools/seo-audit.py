@@ -42,6 +42,7 @@ class PageParser(HTMLParser):
         self.ids = set()
         self.images_without_alt = 0
         self.json_ld = []
+        self.organization_schema = None
         self._in_json_ld = False
         self._json_parts = []
 
@@ -72,7 +73,14 @@ class PageParser(HTMLParser):
         if tag == "title":
             self._in_title = False
         elif tag == "script" and self._in_json_ld:
-            self.json_ld.append("".join(self._json_parts).strip())
+            raw = "".join(self._json_parts).strip()
+            self.json_ld.append(raw)
+            try:
+                schema = json.loads(raw)
+            except json.JSONDecodeError:
+                schema = None
+            if isinstance(schema, dict) and schema.get("@type") == "Organization":
+                self.organization_schema = schema
             self._in_json_ld = False
 
     def handle_data(self, data):
@@ -120,6 +128,30 @@ def main():
                 json.loads(raw)
             except json.JSONDecodeError as exc:
                 errors.append(f"{name}: invalid JSON-LD: {exc}")
+        organization = page.organization_schema
+        if organization is None:
+            errors.append(f"{name}: missing Organization JSON-LD")
+        else:
+            if organization.get("name") != "Xcellence Exim":
+                errors.append(f"{name}: Organization name must be Xcellence Exim")
+            if organization.get("url") != "https://xcellenceexim.com/":
+                errors.append(f"{name}: Organization URL must be the production home page")
+            if "Indian agricultural merchant exporter" not in organization.get("description", ""):
+                errors.append(f"{name}: Organization description must identify an Indian agricultural merchant exporter")
+            address = organization.get("address", {})
+            for field, expected in {
+                "@type": "PostalAddress",
+                "addressLocality": "Kota",
+                "addressRegion": "Rajasthan",
+                "addressCountry": "IN",
+            }.items():
+                if address.get(field) != expected:
+                    errors.append(f"{name}: Organization address {field} must be {expected}")
+            contact = organization.get("contactPoint", {})
+            if contact.get("@type") != "ContactPoint" or contact.get("contactType") != "export sales":
+                errors.append(f"{name}: Organization contact point must be export sales")
+            if "https://www.linkedin.com/company/xcellence-exim/" not in organization.get("sameAs", []):
+                errors.append(f"{name}: Organization sameAs must include the Xcellence Exim LinkedIn profile")
 
     route_sources = {route: source for source, route in ROUTES.items()}
     for name, page in parsed.items():
@@ -150,6 +182,16 @@ def main():
             errors.append("sitemap.xml: canonical clean URL set does not match generated pages")
     except ET.ParseError as exc:
         errors.append(f"sitemap.xml: invalid XML: {exc}")
+
+    redirect_lines = (ROOT / "_redirects").read_text(encoding="utf-8").splitlines()
+    nested_contact_redirect = next(
+        (line.split() for line in redirect_lines
+         if line.strip() and not line.lstrip().startswith("#")
+         and line.split()[0] == "/sugar-icumsa-45/contact-us/"),
+        None,
+    )
+    if nested_contact_redirect is None or nested_contact_redirect[1:] != ["/contact-us/", "301"]:
+        errors.append("_redirects: malformed nested contact route must permanently redirect to /contact-us/")
 
     if errors:
         print("SEO audit failed:")

@@ -215,7 +215,7 @@ def head(title, desc, page, extra_schema="", og_image=None):
   "@type": "Organization",
   "@id": "{SITE}/#organization",
   "name": "Xcellence Exim",
-  "description": "Indian agricultural exporter and supplier of Basmati and non-Basmati rice, Arabica and Robusta coffee, Indian spices, Sannam S4 red chilli and sugar ICUMSA 45 for global importers.",
+  "description": "Xcellence Exim is an Indian agricultural merchant exporter and supplier of Basmati and non-Basmati rice, Arabica and Robusta coffee, Indian spices, Sannam S4 red chilli and sugar ICUMSA 45 for global importers.",
   "url": "{SITE}/",
   "logo": "{IMAGES['favicon']}",
   "email": "{EMAIL_SALES}",
