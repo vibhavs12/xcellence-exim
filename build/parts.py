@@ -26,6 +26,7 @@ IMG = SITE + "/wp-content/uploads"
 
 IMAGES = {
     "logo":   SITE + "/assets/img/brand/logo.png",
+    "favicon": SITE + "/assets/img/brand/favicon.png",
     "hero1":  IMG + "/2025/09/spice-shop-37.png",
     "hero2":  IMG + "/2025/09/spice-shop-36.png",
     "hero3":  IMG + "/2025/09/spice-shop-38.png",
@@ -200,8 +201,8 @@ def head(title, desc, page, extra_schema="", og_image=None):
 <meta name="twitter:image" content="{img}">
 <meta name="twitter:image:alt" content="{page_name} — Xcellence Exim">
 
-<link rel="icon" href="{IMAGES['logo']}">
-<link rel="apple-touch-icon" href="{IMAGES['logo']}">
+<link rel="icon" href="{IMAGES['favicon']}" sizes="any">
+<link rel="apple-touch-icon" href="{IMAGES['favicon']}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdn.gtranslate.net">
@@ -216,7 +217,7 @@ def head(title, desc, page, extra_schema="", og_image=None):
   "name": "Xcellence Exim",
   "description": "Indian agricultural exporter and supplier of Basmati and non-Basmati rice, Arabica and Robusta coffee, Indian spices, Sannam S4 red chilli and sugar ICUMSA 45 for global importers.",
   "url": "{SITE}/",
-  "logo": "{IMAGES['logo']}",
+  "logo": "{IMAGES['favicon']}",
   "email": "{EMAIL_SALES}",
   "telephone": "{PHONE}",
   "areaServed": "Worldwide",
