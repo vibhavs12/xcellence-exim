@@ -19,13 +19,13 @@ FB = "https://www.facebook.com/profile.php?id=61578054179792"
 IG = "https://www.instagram.com/xcellence_exim"
 LI = "https://www.linkedin.com/company/xcellence-exim/"
 
-# Images are served from the client's existing WordPress media library so the
-# redesign works the moment you open it. Run tools/download-images.sh to
-# self-host them under assets/img/ and swap IMG_BASE to "assets/img".
+# The brand mark is delivered from the versioned asset route. Keeping it out of
+# the legacy wp-content path prevents stale fallback HTML from being returned to
+# mobile browsers during cache or deployment transitions.
 IMG = SITE + "/wp-content/uploads"
 
 IMAGES = {
-    "logo":   IMG + "/2026/07/Screenshot-2026-07-15-180236.png",
+    "logo":   SITE + "/assets/img/brand/logo.png",
     "hero1":  IMG + "/2025/09/spice-shop-37.png",
     "hero2":  IMG + "/2025/09/spice-shop-36.png",
     "hero3":  IMG + "/2025/09/spice-shop-38.png",
